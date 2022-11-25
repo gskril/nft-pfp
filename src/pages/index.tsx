@@ -64,21 +64,34 @@ export default function Home() {
         </>
       )}
 
-      {data && (
-        <a
-          href={getEtherscanUrl(data, chain)}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View on Etherscan
-        </a>
+      {data && isLoading && (
+        <p>
+          Transaction pending...{' '}
+          <a
+            href={getEtherscanUrl(data, chain)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View on Etherscan
+          </a>
+        </p>
       )}
-
-      {isLoading && <p>Transaction pending...</p>}
 
       {isError && <p>Transaction failed</p>}
 
-      {data && !isLoading && !isError && <p>Transaction successful!</p>}
+      {data && !isLoading && !isError && (
+        <p>
+          Transaction successful!{' '}
+          <a
+            href="https://testnets.opensea.io/collection/opennft-iboh5rhaks"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View on OpenSea
+          </a>{' '}
+          (it might take a minute to appear)
+        </p>
+      )}
     </div>
   )
 }
