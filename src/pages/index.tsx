@@ -1,4 +1,6 @@
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useState } from 'react'
+
 import handleSubmit from '../utils/handleSubmit'
 import type { State } from '../types'
 
@@ -21,6 +23,8 @@ export default function Home() {
         <p>{state.status}</p>
         <p>{state.message}</p>
       </form>
+
+      <ConnectButton />
     </div>
   )
 }
