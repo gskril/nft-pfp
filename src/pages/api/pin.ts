@@ -18,24 +18,37 @@ export default async function handler(
   const data = JSON.parse(req.body)
   const { image, filename } = data
 
-  // Decode the base64 string
-  const imageBuffer = Buffer.from(image, 'base64')
+  // Create the file structure
+  const timestamp = Date.now().toString()
+  const dirPath = `public/gen/${timestamp}`
+  const imgPath = `${dirPath}/${filename}`
+  const metadataPath = `${dirPath}/metadata.json`
+  fs.mkdirSync(dirPath, { recursive: true })
 
   // Save the image to disk
-  const filePath = `public/gen/${filename}`
-  fs.writeFileSync(filePath, imageBuffer)
+  const imageBuffer = Buffer.from(image, 'base64')
+  fs.writeFileSync(imgPath, imageBuffer)
 
   // Pin the image to IPFS
-  const response = await pinata.pinFromFS(filePath, {
-    pinataMetadata: {
-      name: filename,
-    },
-  })
+  const imgHash = await pinata.pinFromFS(imgPath).then((res) => res.IpfsHash)
+
+  // Create the metadata JSON file
+  const nftMetadata = {
+    name: 'NFT Avatar',
+    description: 'NFT avatar',
+    image: `ipfs://${imgHash}`,
+  }
+
+  // Save the metadata to disk
+  fs.writeFileSync(metadataPath, JSON.stringify(nftMetadata))
+
+  // Pin the metadata to IPFS
+  const response = await pinata.pinFromFS(metadataPath)
 
   res.status(200).json(response)
 
-  // Delete the image from disk
-  fs.rmSync(filePath)
+  // Delete the directory from disk
+  fs.rmdirSync(dirPath, { recursive: true })
 }
 
 // Override default Next.js API limits
