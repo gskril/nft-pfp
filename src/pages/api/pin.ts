@@ -2,14 +2,18 @@ import fs from 'fs'
 import pinataSDK, { PinataPinResponse } from '@pinata/sdk'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-const pinata = new pinataSDK(
-  process.env.PINATA_API_KEY!,
-  process.env.PINATA_API_SECRET!
-)
+const PINATA_API_KEY = process.env.PINATA_API_KEY
+const PINATA_API_SECRET = process.env.PINATA_API_SECRET
+
+if (!PINATA_API_KEY || !PINATA_API_SECRET) {
+  throw new Error('PINATA_API_KEY and PINATA_API_SECRET must be provided')
+}
+
+const pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET)
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<void | PinataPinResponse>
+  res: NextApiResponse<PinataPinResponse>
 ) {
   const data = JSON.parse(req.body)
   const { image, filename } = data
@@ -32,4 +36,13 @@ export default async function handler(
 
   // Delete the image from disk
   fs.rmSync(filePath)
+}
+
+// Override default Next.js API limits
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '4mb',
+    },
+  },
 }
