@@ -1,3 +1,4 @@
+import '../styles/normalize.scss'
 import '../styles/fonts.scss'
 import '../styles/globals.scss'
 import type { AppProps } from 'next/app'
