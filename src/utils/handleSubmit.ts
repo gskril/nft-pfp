@@ -8,12 +8,17 @@ export default async function handleSubmit(
   e.preventDefault()
   setState({ status: 'loading' })
 
+  // Get name for NFT
+  const _name = e.currentTarget.name as unknown as HTMLFormElement
+  const name = _name.value
+
   // Format image
   const image = e.currentTarget.file.files[0]
   const imageBuffer = await image.arrayBuffer()
   const body = JSON.stringify({
     image: Buffer.from(imageBuffer).toString('base64'),
     filename: image.name,
+    name: name,
   })
 
   // Check file size

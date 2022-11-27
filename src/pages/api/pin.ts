@@ -16,7 +16,7 @@ export default async function handler(
   res: NextApiResponse<PinataPinResponse>
 ) {
   const data = JSON.parse(req.body)
-  const { image, filename } = data
+  const { image, filename, name } = data
 
   // Create the file structure
   const timestamp = Date.now().toString()
@@ -34,7 +34,7 @@ export default async function handler(
 
   // Create the metadata JSON file
   const nftMetadata = {
-    name: 'NFT Avatar',
+    name: name,
     description: 'NFT avatar',
     image: `ipfs://${imgHash}`,
   }
