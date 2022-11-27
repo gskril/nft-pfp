@@ -1,4 +1,4 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import {
   useAccount,
   useContractWrite,
@@ -9,8 +9,12 @@ import {
 
 import { ABI, getContractAddress, getEtherscanUrl } from '../utils/contract'
 import { State } from '../types'
+import Button from './Button'
+import { useState } from 'react'
 
 export default function Mint({ state }: { state: State }) {
+  const { openConnectModal } = useConnectModal()
+
   const { address } = useAccount()
   const { chain } = useNetwork()
   const tokenUri = `ipfs://${state?.message}`
@@ -29,49 +33,43 @@ export default function Mint({ state }: { state: State }) {
 
   if (state.status !== 'success') return null
 
-  return (
-    <>
-      {state.status === 'success' && !data && (
-        <>
-          <hr />
-          <br />
-          <ConnectButton />
-          <p>Token URI: {tokenUri}</p>
-          {address && <p>Network: {chain?.name}</p>}
-          <button disabled={!write} onClick={() => write?.()}>
-            Mint NFT
-          </button>
-        </>
-      )}
+  if (!address) {
+    return <Button onClick={openConnectModal}>Connect Wallet</Button>
+  }
 
-      {data && isLoading && (
-        <p>
-          Transaction pending...{' '}
-          <a
-            href={getEtherscanUrl(data, chain)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View on Etherscan
-          </a>
-        </p>
-      )}
+  if (!data) {
+    return (
+      <Button disabled={!write} onClick={() => write?.()}>
+        {`Mint NFT${chain?.id !== 1 && ` (${chain?.name})`}`}
+      </Button>
+    )
+  }
 
-      {isError && <p>Transaction failed</p>}
+  if (isLoading) {
+    return (
+      <Button as="a" href={getEtherscanUrl(data, chain)} loading>
+        Minting NFT
+      </Button>
+    )
+  }
 
-      {data && !isLoading && !isError && (
-        <p>
-          Transaction successful!{' '}
-          <a
-            href="https://testnets.opensea.io/collection/opennft-iboh5rhaks"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View on OpenSea
-          </a>{' '}
-          (it might take a minute to appear)
-        </p>
-      )}
-    </>
-  )
+  if (isError) {
+    return (
+      <Button as="a" href={getEtherscanUrl(data, chain)} state="error">
+        Transaction Failed
+      </Button>
+    )
+  }
+
+  if (data && !isLoading && !isError) {
+    return (
+      <Button
+        as="a"
+        href="https://testnets.opensea.io/collection/opennft-iboh5rhaks"
+        state="success"
+      >
+        View on OpenSea
+      </Button>
+    )
+  }
 }

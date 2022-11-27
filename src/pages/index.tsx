@@ -50,6 +50,9 @@ export default function Home() {
           }
 
           .interactive {
+            display: flex;
+            flex-direction: column;
+            gap: 1.125rem;
             width: 100%;
             max-width: 22rem;
           }

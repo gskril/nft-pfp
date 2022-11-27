@@ -51,6 +51,7 @@ export default function Footer() {
           display: flex;
           align-items: center;
           font-size: 1.125rem;
+          font-weight: 500;
           flex-direction: column;
 
           @media (min-width: 560px) {

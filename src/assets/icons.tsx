@@ -20,7 +20,7 @@ export function ArrowIcon({ ...props }) {
   )
 }
 
-export function LoadingIcon() {
+export function LoadingIcon({ theme }: { theme?: 'light' }) {
   return (
     <>
       <svg
@@ -28,18 +28,17 @@ export function LoadingIcon() {
         height="25"
         viewBox="0 0 25 25"
         fill="none"
+        stroke={theme === 'light' ? '#B4D2FF' : '#4F95FF'}
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
           d="M12.5 2.5C18.0229 2.5 22.5 6.97716 22.5 12.5C22.5 18.0229 18.0229 22.5 12.5 22.5C6.97716 22.5 2.5 18.0229 2.5 12.5C2.5 6.97716 6.97716 2.5 12.5 2.5Z"
-          stroke="#4F95FF"
           strokeOpacity="0.3"
           strokeWidth="4"
           strokeLinecap="round"
         />
         <path
           d="M12.5 2.5C18.0229 2.5 22.5 6.97716 22.5 12.5"
-          stroke="#4F95FF"
           strokeWidth="4"
           strokeLinecap="round"
         />
