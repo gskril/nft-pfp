@@ -23,7 +23,9 @@ export default function Uploader({ state, setState }: UploaderProps) {
             <span>{name}</span>
           </div>
 
-          <SuccessIcon />
+          <div className="right">
+            <SuccessIcon />
+          </div>
         </div>
 
         <style jsx>{`
@@ -50,12 +52,18 @@ export default function Uploader({ state, setState }: UploaderProps) {
 
               img {
                 border-radius: 0.375rem;
+                aspect-ratio: 1;
+                object-fit: cover;
                 border: 1px solid rgba(18, 28, 55, 0.2);
               }
 
               span {
                 opacity: 0.8;
               }
+            }
+
+            .right {
+              width: auto;
             }
           }
         `}</style>
