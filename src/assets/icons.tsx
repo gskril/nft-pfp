@@ -63,3 +63,25 @@ export function LoadingIcon() {
     </>
   )
 }
+
+export function SuccessIcon() {
+  return (
+    <svg
+      width="24"
+      height="23"
+      viewBox="0 0 24 23"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 0C18.3513 0 23.5 5.14873 23.5 11.5C23.5 17.8513 18.3513 23 12 23C5.64873 23 0.5 17.8513 0.5 11.5C0.5 5.14873 5.64873 0 12 0Z"
+        fill="#4F95FF"
+        fillOpacity="0.2"
+      />
+      <path
+        d="M10.8671 17.86L18.5871 8.6L17.0071 7.26L10.7871 14.74L7.94713 11.7L6.54713 13.2L10.8671 17.86Z"
+        fill="#4F95FF"
+      />
+    </svg>
+  )
+}
