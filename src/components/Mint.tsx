@@ -72,4 +72,6 @@ export default function Mint({ state }: { state: State }) {
       </Button>
     )
   }
+
+  return null
 }
