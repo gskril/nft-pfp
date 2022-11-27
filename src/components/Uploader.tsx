@@ -124,7 +124,7 @@ export default function Uploader({ state, setState }: UploaderProps) {
             }
 
             &::placeholder {
-              color: RGBA(var(--text-color-rgb), 0.6);
+              color: RGBA(var(--text-color-rgb), 0.35);
             }
           }
 
