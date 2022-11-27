@@ -1,37 +1,13 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useState } from 'react'
-import {
-  useAccount,
-  useContractWrite,
-  useNetwork,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from 'wagmi'
 
-import { ABI, getContractAddress, getEtherscanUrl } from '../utils/contract'
 import Footer from '../components/Footer'
 import Hero from '../components/Hero'
+import Mint from '../components/Mint'
 import type { State } from '../types'
 import Uploader from '../components/Uploader'
 
 export default function Home() {
   const [state, setState] = useState<State>({ status: 'idle' })
-
-  const { address } = useAccount()
-  const { chain } = useNetwork()
-  const tokenUri = `ipfs://${state?.message}`
-
-  const { config } = usePrepareContractWrite({
-    address: getContractAddress(chain?.id),
-    abi: ABI,
-    functionName: 'mintNFT',
-    args: [address, tokenUri],
-  })
-
-  const { data, write } = useContractWrite(config)
-  const { isError, isLoading } = useWaitForTransaction({
-    hash: data?.hash,
-  })
 
   return (
     <>
@@ -41,49 +17,8 @@ export default function Home() {
         <main>
           <Hero />
           <div className="interactive">
-            {!data && <Uploader state={state} setState={setState} />}
-
-            {state.status === 'success' && !data && (
-              <>
-                <hr />
-                <br />
-                <ConnectButton />
-                <p>Token URI: {tokenUri}</p>
-                {address && <p>Network: {chain?.name}</p>}
-                <button disabled={!write} onClick={() => write?.()}>
-                  Mint NFT
-                </button>
-              </>
-            )}
-
-            {data && isLoading && (
-              <p>
-                Transaction pending...{' '}
-                <a
-                  href={getEtherscanUrl(data, chain)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View on Etherscan
-                </a>
-              </p>
-            )}
-
-            {isError && <p>Transaction failed</p>}
-
-            {data && !isLoading && !isError && (
-              <p>
-                Transaction successful!{' '}
-                <a
-                  href="https://testnets.opensea.io/collection/opennft-iboh5rhaks"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View on OpenSea
-                </a>{' '}
-                (it might take a minute to appear)
-              </p>
-            )}
+            <Uploader state={state} setState={setState} />
+            <Mint state={state} />
           </div>
         </main>
 
