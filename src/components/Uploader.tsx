@@ -58,11 +58,13 @@ export default function Uploader({ state, setState }: UploaderProps) {
           background-position: center;
           background-size: cover;
           border-radius: 0.5rem;
+          overflow: hidden;
           border: ${file ? '1px solid #464646' : '1px dashed #919191'};
 
           input {
             visibility: hidden;
             position: absolute;
+            inset: 0;
           }
 
           label {

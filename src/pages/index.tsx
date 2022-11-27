@@ -9,9 +9,9 @@ import {
 } from 'wagmi'
 
 import { ABI, getContractAddress, getEtherscanUrl } from '../utils/contract'
-import handleSubmit from '../utils/handleSubmit'
-import type { State } from '../types'
+import Footer from '../components/Footer'
 import Hero from '../components/Hero'
+import type { State } from '../types'
 import Uploader from '../components/Uploader'
 
 export default function Home() {
@@ -87,7 +87,7 @@ export default function Home() {
           </div>
         </main>
 
-        <footer>hi</footer>
+        <Footer />
       </div>
 
       <style jsx>{`
@@ -101,8 +101,8 @@ export default function Home() {
           justify-content: space-around;
           align-items: stretch;
 
-          @media (min-width: 768px) {
-            padding: 2rem;
+          @media (min-width: 560px) {
+            padding: 1.5rem 2rem;
           }
 
           main {

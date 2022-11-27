@@ -14,7 +14,7 @@ export default function Hero() {
           gap: 0.25rem;
           text-align: center;
 
-          @media (min-width: 768px) {
+          @media (min-width: 560px) {
             gap: 0.5rem;
           }
 
@@ -24,7 +24,7 @@ export default function Hero() {
             font-weight: 500;
             font-size: 1.5rem;
 
-            @media (min-width: 768px) {
+            @media (min-width: 560px) {
               font-size: 1.625rem;
             }
           }
@@ -34,7 +34,7 @@ export default function Hero() {
             font-size: 3rem;
             color: var(--color-primary);
 
-            @media (min-width: 768px) {
+            @media (min-width: 560px) {
               font-size: 4.5rem;
             }
           }
