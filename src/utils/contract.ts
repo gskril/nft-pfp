@@ -20,7 +20,13 @@ export const getContractAddress = (chainId?: number) => {
 }
 
 export const getEtherscanUrl = (data: SendTransactionResult, chain?: Chain) => {
-  return `https://${chain?.id === 5 ? 'goerli.' : ''}etherscan.io/tx/${
-    data.hash
-  }`
+  return chain?.id === 5
+    ? `https://goerli.etherscan.io/tx/${data.hash}`
+    : `https://etherscan.io/tx/${data.hash}`
+}
+
+export const getOpenseaUrl = (chain?: Chain) => {
+  return chain?.id === 5
+    ? 'https://testnets.opensea.io/collection/opennft-iboh5rhaks?search[sortAscending]=false&search[sortBy]=CREATED_DATE'
+    : 'https://opensea.io/collection/opennft-v3?search[sortAscending]=false&search[sortBy]=CREATED_DATE'
 }

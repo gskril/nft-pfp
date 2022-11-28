@@ -1,4 +1,3 @@
-import { useConnectModal } from '@rainbow-me/rainbowkit'
 import {
   useAccount,
   useContractWrite,
@@ -6,14 +5,26 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from 'wagmi'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { useState } from 'react'
+import Confetti from 'react-confetti'
+import toast from 'react-hot-toast'
+import useWindowSize from 'react-use/lib/useWindowSize'
 
-import { ABI, getContractAddress, getEtherscanUrl } from '../utils/contract'
+import {
+  ABI,
+  getContractAddress,
+  getEtherscanUrl,
+  getOpenseaUrl,
+} from '../utils/contract'
 import { State } from '../types'
 import Button from './Button'
-import { useState } from 'react'
+import Success from './Success'
 
 export default function Mint({ state }: { state: State }) {
   const { openConnectModal } = useConnectModal()
+  const [isComplete, setIsComplete] = useState(false)
+  const { width: windowWidth, height: windowHeight } = useWindowSize()
 
   const { address } = useAccount()
   const { chain } = useNetwork()
@@ -29,6 +40,11 @@ export default function Mint({ state }: { state: State }) {
   const { data, write } = useContractWrite(config)
   const { isError, isLoading } = useWaitForTransaction({
     hash: data?.hash,
+    onSuccess: () => {
+      toast.success('Minted NFT', {
+        duration: 3000,
+      })
+    },
   })
 
   if (state.status !== 'success') return null
@@ -63,13 +79,60 @@ export default function Mint({ state }: { state: State }) {
 
   if (data && !isLoading && !isError) {
     return (
-      <Button
-        as="a"
-        href="https://testnets.opensea.io/collection/opennft-iboh5rhaks"
-        state="success"
-      >
-        View on OpenSea
-      </Button>
+      <>
+        {isComplete && (
+          <Confetti
+            width={windowWidth}
+            height={windowHeight}
+            colors={['#44BCFO', '#7298F8', '#A099FF', '#DE82FF', '#7F6AFF']}
+            style={{ zIndex: '1000' }}
+          />
+        )}
+
+        <Success name="Minted NFT" href={getEtherscanUrl(data, chain)} />
+
+        {!isComplete && (
+          <div className="buttons">
+            <Button variant="secondary" onClick={() => setIsComplete(true)}>
+              Done
+            </Button>
+            <Button
+              onClick={async () => {
+                const tokenId = 10 // TODO: Get this from the transaction
+                const contractaddress = getContractAddress(1)
+                const avatarRecord = `eip155:1/erc721:${contractaddress}/${tokenId}`
+                await navigator.clipboard
+                  .writeText(avatarRecord)
+                  .then(() =>
+                    toast.success('Copied ENS avatar record to clipboard', {
+                      duration: 3000,
+                    })
+                  )
+                  .catch(() => toast.error('Error copying ENS avatar record'))
+              }}
+            >
+              Use as ENS Avatar
+            </Button>
+          </div>
+        )}
+
+        {isComplete && (
+          <Button as="a" href={getOpenseaUrl(chain)} state="success">
+            View on OpenSea
+          </Button>
+        )}
+
+        <style jsx>{`
+          .buttons {
+            display: grid;
+            gap: 0.75rem;
+
+            @media (min-width: 560px) {
+              grid-template-columns: 1fr 2fr;
+            }
+          }
+        `}</style>
+      </>
     )
   }
 

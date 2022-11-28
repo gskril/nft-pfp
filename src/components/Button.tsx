@@ -3,6 +3,7 @@ import { LoadingIcon } from '../assets/icons'
 type ButtonProps = {
   as?: 'button' | 'a'
   href?: string
+  variant?: 'secondary'
   loading?: boolean
   state?: 'success' | 'error'
   disabled?: boolean
@@ -13,6 +14,7 @@ type ButtonProps = {
 export default function Button({
   as,
   href,
+  variant,
   loading,
   state,
   disabled,
@@ -44,6 +46,8 @@ export default function Button({
             ? '#d55555'
             : state === 'success'
             ? '#44c4a4'
+            : variant === 'secondary'
+            ? 'rgba(82, 152, 255, 0.15)'
             : '#3889ff'};
           line-height: 1.6;
           padding: 0.75rem 1.25rem;
@@ -52,8 +56,8 @@ export default function Button({
           width: 100%;
           border-radius: 0.5rem;
           font-weight: 700;
-          color: #fff;
-          box-shadow: var(--shadow);
+          color: ${variant === 'secondary' ? '#5298ff' : '#fff'};
+          box-shadow: ${variant === 'secondary' ? 'none' : 'var(--shadow)'};
           transition: all 0.15s ease-in-out;
 
           &:hover,

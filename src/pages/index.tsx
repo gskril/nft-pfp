@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import { Toaster } from 'react-hot-toast'
+import { useState } from 'react'
 
 import Footer from '../components/Footer'
 import Hero from '../components/Hero'
@@ -55,7 +55,7 @@ export default function Home() {
           .interactive {
             display: flex;
             flex-direction: column;
-            gap: 1.125rem;
+            gap: 1rem;
             width: 100%;
             max-width: 22rem;
           }

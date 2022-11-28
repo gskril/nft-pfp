@@ -3,6 +3,7 @@ import toast from 'react-hot-toast'
 
 import { ArrowIcon, LoadingIcon, SuccessIcon } from '../assets/icons'
 import handleSubmit from '../utils/handleSubmit'
+import Success from './Success'
 import type { State } from '../types'
 
 type UploaderProps = {
@@ -16,61 +17,8 @@ export default function Uploader({ state, setState }: UploaderProps) {
   const [fileUrl, setFileUrl] = useState<string | undefined | null>(null)
 
   if (state.status === 'success') {
-    return (
-      <>
-        <div className="success">
-          <div className="left">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={fileUrl!} alt={name!} width={36} height={36} />
-            <span>{name}</span>
-          </div>
-
-          <div className="right">
-            <SuccessIcon />
-          </div>
-        </div>
-
-        <style jsx>{`
-          .success {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 2rem;
-            padding: 0.5rem;
-            font-weight: 500;
-            font-size: 1.125rem;
-            border-radius: 0.5rem;
-            background-color: #fff;
-            box-shadow: var(--shadow);
-
-            & > * {
-              width: 100%;
-            }
-
-            .left {
-              display: flex;
-              align-items: center;
-              gap: 0.5rem;
-
-              img {
-                border-radius: 0.375rem;
-                aspect-ratio: 1;
-                object-fit: cover;
-                border: 1px solid rgba(18, 28, 55, 0.2);
-              }
-
-              span {
-                opacity: 0.8;
-              }
-            }
-
-            .right {
-              width: auto;
-            }
-          }
-        `}</style>
-      </>
-    )
+    const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${state?.message}`
+    return <Success name="Pinned to IPFS" href={ipfsUrl} />
   }
 
   return (

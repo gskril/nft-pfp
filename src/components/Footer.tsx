@@ -1,12 +1,18 @@
+import { useEffect, useState } from 'react'
 import { useNetwork } from 'wagmi'
+
 import { getContractAddress } from '../utils/contract'
 
 export default function Footer() {
   const { chain } = useNetwork()
 
-  const etherscanUrl = `https://${
-    chain?.id === 5 ? 'goerli.' : ''
-  }etherscan.io/address/${getContractAddress(chain?.id)}`
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  const etherscanUrl =
+    chain?.id === 5
+      ? `https://goerli.etherscan.io/address/${getContractAddress(chain?.id)}`
+      : `https://etherscan.io/address/${getContractAddress(chain?.id)}`
 
   const openseaUrl =
     chain?.id === 5
@@ -35,11 +41,15 @@ export default function Footer() {
             GitHub
           </a>
 
-          <a href={etherscanUrl} target="_blank" rel="noreferrer">
+          <a
+            href={mounted ? etherscanUrl : ''}
+            target="_blank"
+            rel="noreferrer"
+          >
             Etherscan
           </a>
 
-          <a href={openseaUrl} target="_blank" rel="noreferrer">
+          <a href={mounted ? openseaUrl : ''} target="_blank" rel="noreferrer">
             OpenSea
           </a>
         </div>
