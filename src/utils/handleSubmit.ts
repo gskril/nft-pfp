@@ -3,6 +3,7 @@ import type { State } from '../types'
 
 export default async function handleSubmit(
   e: FormEvent<HTMLFormElement>,
+  file: File,
   setState: (state: State) => void
 ) {
   e.preventDefault()
@@ -13,7 +14,7 @@ export default async function handleSubmit(
   const name = _name.value
 
   // Format image
-  const image = e.currentTarget.file.files[0]
+  const image = file
   const imageBuffer = await image.arrayBuffer()
   const body = JSON.stringify({
     image: Buffer.from(imageBuffer).toString('base64'),

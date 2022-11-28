@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Toaster } from 'react-hot-toast'
 
 import Footer from '../components/Footer'
 import Hero from '../components/Hero'
@@ -11,6 +12,8 @@ export default function Home() {
 
   return (
     <>
+      <Toaster position="bottom-center" />
+
       <div className="layout">
         <div />
 

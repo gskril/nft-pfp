@@ -1,5 +1,7 @@
-import { ArrowIcon, LoadingIcon, SuccessIcon } from '../assets/icons'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
+
+import { ArrowIcon, LoadingIcon, SuccessIcon } from '../assets/icons'
 import handleSubmit from '../utils/handleSubmit'
 import type { State } from '../types'
 
@@ -73,19 +75,42 @@ export default function Uploader({ state, setState }: UploaderProps) {
 
   return (
     <>
-      <form onSubmit={async (e) => await handleSubmit(e, setState)}>
+      <form
+        onSubmit={async (e) => {
+          if (!file) {
+            toast.error('Please select a file first')
+          } else {
+            await handleSubmit(e, file, setState)
+          }
+        }}
+      >
         <div
           className="file"
+          onDragOver={(e) => e.preventDefault()}
           style={{
             backgroundImage: file ? `url(${fileUrl})` : undefined,
           }}
         >
-          <label htmlFor="file">Attach file (max 4mb)</label>
+          <label
+            htmlFor="file"
+            onDrop={async (e) => {
+              e.preventDefault()
+              const file = e.dataTransfer.files && e.dataTransfer.files[0]
+
+              if (file && file.type.startsWith('image/')) {
+                setFile(file)
+                setFileUrl(URL.createObjectURL(file))
+              } else {
+                toast.error('The file must be an image')
+              }
+            }}
+          >
+            Attach file (max 4mb)
+          </label>
           <input
             type="file"
             name="file"
             id="file"
-            required
             accept="image/png, image/jpeg"
             disabled={state.status === 'loading'}
             onChange={(e) => {
