@@ -56,7 +56,7 @@ export default function Mint({ state }: { state: State }) {
   if (!data) {
     return (
       <Button disabled={!write} onClick={() => write?.()}>
-        {`Mint NFT${chain?.id !== 1 && ` (${chain?.name})`}`}
+        {`Mint NFT${chain?.id !== 1 ? ` (${chain?.name})` : ''}`}
       </Button>
     )
   }
