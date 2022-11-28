@@ -18,7 +18,7 @@ export default function Uploader({ state, setState }: UploaderProps) {
 
   if (state.status === 'success') {
     const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${state?.message}`
-    return <Success name="Pinned to IPFS" href={ipfsUrl} />
+    return <Success name="Uploaded media" href={ipfsUrl} />
   }
 
   return (
@@ -53,7 +53,7 @@ export default function Uploader({ state, setState }: UploaderProps) {
               }
             }}
           >
-            Attach file (max 4mb)
+            Upload image (max 4mb)
           </label>
           <input
             type="file"
@@ -132,6 +132,10 @@ export default function Uploader({ state, setState }: UploaderProps) {
             display: block;
             padding: 5rem 1rem;
             opacity: ${file ? '0' : '0.5'};
+
+            &:hover {
+              cursor: pointer;
+            }
           }
         }
 

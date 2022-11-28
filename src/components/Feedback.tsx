@@ -1,12 +1,13 @@
 import { ArrowIcon, LoadingIcon } from '../assets/icons'
 import { FormEvent, useState } from 'react'
 import toast from 'react-hot-toast'
+import Modal from './Modal'
 
-export default function Feedback({
-  setIsOpen,
-}: {
+type FeedbackProps = {
   setIsOpen: (isOpen: boolean) => void
-}) {
+}
+
+export default function Feedback({ setIsOpen }: FeedbackProps) {
   const [text, setText] = useState<string | undefined | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -35,59 +36,27 @@ export default function Feedback({
 
   return (
     <>
-      <div className="modal">
-        <div className="background" onClick={() => setIsOpen(false)} />
-        <div className="content">
-          <form onSubmit={async (e) => await handleSubmit(e)}>
-            <input
-              type="text"
-              name="text"
-              id="text"
-              placeholder="It would be cool if..."
-              autoFocus
-              onChange={(e) => setText(e.target.value)}
-            />
-            <button type="submit" disabled={!text}>
-              {isLoading ? (
-                <LoadingIcon />
-              ) : (
-                <ArrowIcon disabled={!text || text.length < 3} />
-              )}
-            </button>
-          </form>
-        </div>
-      </div>
+      <Modal setIsOpen={setIsOpen} padding={false}>
+        <form onSubmit={async (e) => await handleSubmit(e)}>
+          <input
+            type="text"
+            name="text"
+            id="text"
+            placeholder="It would be cool if..."
+            autoFocus
+            onChange={(e) => setText(e.target.value)}
+          />
+          <button type="submit" disabled={!text}>
+            {isLoading ? (
+              <LoadingIcon />
+            ) : (
+              <ArrowIcon disabled={!text || text.length < 3} />
+            )}
+          </button>
+        </form>
+      </Modal>
 
       <style jsx>{`
-        .modal {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 100;
-          background: rgba(0, 0, 0, 0.5);
-          backdrop-filter: blur(0.5rem);
-        }
-
-        .background {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-        }
-
-        .content {
-          padding: 1.5rem;
-          max-width: 34rem;
-          width: 100%;
-          z-index: 101;
-        }
-
         form {
           position: relative;
 
