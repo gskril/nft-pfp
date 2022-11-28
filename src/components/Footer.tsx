@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNetwork } from 'wagmi'
 
 import { getContractAddress } from '../utils/contract'
+import Feedback from './Feedback'
 
 export default function Footer() {
   const { chain } = useNetwork()
@@ -9,15 +10,12 @@ export default function Footer() {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
+
   const etherscanUrl =
     chain?.id === 5
       ? `https://goerli.etherscan.io/address/${getContractAddress(chain?.id)}`
       : `https://etherscan.io/address/${getContractAddress(chain?.id)}`
-
-  const openseaUrl =
-    chain?.id === 5
-      ? 'https://testnets.opensea.io/collection/opennft-iboh5rhaks'
-      : 'https://opensea.io/collection/opennft-v3'
 
   return (
     <>
@@ -49,9 +47,11 @@ export default function Footer() {
             Etherscan
           </a>
 
-          <a href={mounted ? openseaUrl : ''} target="_blank" rel="noreferrer">
-            OpenSea
-          </a>
+          <button onClick={() => setIsFeedbackOpen(!isFeedbackOpen)}>
+            Feedback
+          </button>
+
+          {isFeedbackOpen && <Feedback setIsOpen={setIsFeedbackOpen} />}
         </div>
       </footer>
 
@@ -74,13 +74,19 @@ export default function Footer() {
         .links {
           display: flex;
           gap: 2rem;
-        }
 
-        a {
-          opacity: 0.6;
+          & > * {
+            opacity: 0.6;
 
-          &:hover {
-            opacity: 1;
+            &:hover {
+              opacity: 1;
+              cursor: pointer;
+            }
+          }
+
+          button {
+            background: none;
+            border: none;
           }
         }
       `}</style>

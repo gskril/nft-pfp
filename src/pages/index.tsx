@@ -12,7 +12,7 @@ export default function Home() {
 
   return (
     <>
-      <Toaster position="bottom-center" />
+      <Toaster />
 
       <div className="layout">
         <div />
