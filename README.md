@@ -1,8 +1,8 @@
 # Mint your PFP as an NFT
 
-This is a simple app to upload/pin an image to IPFS, mint it as an NFT on Ethereum, then optionally set it as your ENS avatar.
+This is a simple app to upload/pin an image to IPFS and mint it as an NFT on a shared Ethereum smart contract.
 
-Build on top of the [OpenNFT](https://github.com/DigOppGroup/OpenNFT) contract.
+Built on top of the [OpenNFT](https://github.com/DigOppGroup/OpenNFT) contract.
 
 ## Getting Started
 
