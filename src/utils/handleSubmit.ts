@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast'
 import type { FormEvent } from 'react'
 import type { State } from '../types'
 
@@ -35,6 +36,11 @@ export default async function handleSubmit(
     body,
   })
     .then((res) => res.json())
-    .then((data) => setState({ status: 'success', message: data.IpfsHash }))
+    .then((data) => {
+      setState({ status: 'success', message: data.IpfsHash })
+      toast.success('Pinned to IPFS', {
+        duration: 3000,
+      })
+    })
     .catch((err) => setState({ status: 'error', message: err }))
 }
