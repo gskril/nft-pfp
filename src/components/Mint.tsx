@@ -21,7 +21,12 @@ import { State } from '../types'
 import Button from './Button'
 import Success from './Success'
 
-export default function Mint({ state }: { state: State }) {
+type MintProps = {
+  state: State
+  setIsMintComplete: (isMintComplete: boolean) => void
+}
+
+export default function Mint({ state, setIsMintComplete }: MintProps) {
   const { openConnectModal } = useConnectModal()
   const [isComplete, setIsComplete] = useState(false)
   const { width: windowWidth, height: windowHeight } = useWindowSize()
@@ -41,6 +46,7 @@ export default function Mint({ state }: { state: State }) {
   const { isError, isLoading } = useWaitForTransaction({
     hash: data?.hash,
     onSuccess: () => {
+      setIsMintComplete(true)
       toast.success('Minted NFT', {
         duration: 3000,
       })
@@ -126,6 +132,7 @@ export default function Mint({ state }: { state: State }) {
           .buttons {
             display: grid;
             gap: 0.75rem;
+            width: 100%;
 
             @media (min-width: 560px) {
               grid-template-columns: 1fr 2fr;

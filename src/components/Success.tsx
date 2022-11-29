@@ -23,6 +23,7 @@ export default function Success({ imageUrl, name, href }: SuccessProps) {
 
       <style jsx>{`
         .success {
+          width: 100%;
           display: flex;
           align-items: center;
           justify-content: space-between;
