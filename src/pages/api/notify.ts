@@ -7,7 +7,7 @@ export default async function handler(
   res: NextApiResponse<any>
 ) {
   const { text } = req.body
-  const endpoint = `${NOTIFY_API}?text=`
+  const endpoint = `${NOTIFY_API}?text=Feedback from mintyourpfp: `
 
   await fetch(endpoint + text)
     .then((res) => res.json())
