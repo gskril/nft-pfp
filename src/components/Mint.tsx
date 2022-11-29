@@ -28,7 +28,6 @@ type MintProps = {
 
 export default function Mint({ state, setIsMintComplete }: MintProps) {
   const { openConnectModal } = useConnectModal()
-  const [isComplete, setIsComplete] = useState(false)
   const { width: windowWidth, height: windowHeight } = useWindowSize()
 
   const { address } = useAccount()
@@ -86,59 +85,18 @@ export default function Mint({ state, setIsMintComplete }: MintProps) {
   if (data && !isLoading && !isError) {
     return (
       <>
-        {isComplete && (
-          <Confetti
-            width={windowWidth}
-            height={windowHeight}
-            colors={['#44BCFO', '#7298F8', '#A099FF', '#DE82FF', '#7F6AFF']}
-            style={{ zIndex: '1000' }}
-          />
-        )}
+        <Confetti
+          width={windowWidth}
+          height={windowHeight}
+          colors={['#44BCFO', '#7298F8', '#A099FF', '#DE82FF', '#7F6AFF']}
+          style={{ zIndex: '1000' }}
+        />
 
         <Success name="Minted NFT" href={getEtherscanUrl(data, chain)} />
 
-        {!isComplete && (
-          <div className="buttons">
-            <Button variant="secondary" onClick={() => setIsComplete(true)}>
-              Done
-            </Button>
-            <Button
-              onClick={async () => {
-                const tokenId = 10 // TODO: Get this from the transaction
-                const contractaddress = getContractAddress(1)
-                const avatarRecord = `eip155:1/erc721:${contractaddress}/${tokenId}`
-                await navigator.clipboard
-                  .writeText(avatarRecord)
-                  .then(() =>
-                    toast.success('Copied ENS avatar record to clipboard', {
-                      duration: 3000,
-                    })
-                  )
-                  .catch(() => toast.error('Error copying ENS avatar record'))
-              }}
-            >
-              Use as ENS Avatar
-            </Button>
-          </div>
-        )}
-
-        {isComplete && (
-          <Button as="a" href={getOpenseaUrl(chain)} state="success">
-            View on OpenSea
-          </Button>
-        )}
-
-        <style jsx>{`
-          .buttons {
-            display: grid;
-            gap: 0.75rem;
-            width: 100%;
-
-            @media (min-width: 560px) {
-              grid-template-columns: 1fr 2fr;
-            }
-          }
-        `}</style>
+        <Button as="a" href={getOpenseaUrl(chain)} state="success">
+          View on OpenSea
+        </Button>
       </>
     )
   }
