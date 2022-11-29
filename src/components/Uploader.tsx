@@ -23,7 +23,10 @@ export default function Uploader({ state, setState }: UploaderProps) {
   useEffect(() => {
     if (state.status === 'error') {
       toast.error(state.message!)
-      plausible('IPFS Upload', { props: { status: 'error' } })
+
+      if (state.message! !== 'File is too large') {
+        plausible('IPFS Upload', { props: { status: 'error' } })
+      }
     } else if (state.status === 'success') {
       toast.success('Pinned to IPFS', { duration: 3000 })
       plausible('IPFS Upload', { props: { status: 'success' } })

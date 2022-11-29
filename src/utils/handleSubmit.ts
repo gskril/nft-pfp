@@ -25,7 +25,7 @@ export default async function handleSubmit(
   // Check file size
   const dataSizeInMb = Buffer.byteLength(body) / 1024 / 1024
   if (dataSizeInMb > 4) {
-    setState({ status: 'error', message: 'File too large' })
+    setState({ status: 'error', message: 'File is too large' })
     return
   }
 
