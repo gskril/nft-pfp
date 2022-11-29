@@ -12,6 +12,7 @@ type UploaderProps = {
 }
 
 export default function Uploader({ state, setState }: UploaderProps) {
+  const [isDragging, setIsDragging] = useState<boolean>(false)
   const [file, setFile] = useState<File | undefined | null>(null)
   const [name, setName] = useState<string | undefined | null>(null)
   const [fileUrl, setFileUrl] = useState<string | undefined | null>(null)
@@ -33,8 +34,12 @@ export default function Uploader({ state, setState }: UploaderProps) {
         }}
       >
         <div
-          className="file"
-          onDragOver={(e) => e.preventDefault()}
+          className={`file ${isDragging ? 'file--dragging' : ''}`}
+          onDragOver={(e) => {
+            e.preventDefault()
+            setIsDragging(true)
+          }}
+          onDragLeave={() => setIsDragging(false)}
           style={{
             backgroundImage: file ? `url(${fileUrl})` : undefined,
           }}
@@ -113,13 +118,17 @@ export default function Uploader({ state, setState }: UploaderProps) {
           font-weight: 700;
           background-color: #fff;
           box-shadow: var(--shadow);
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: cover;
+          background-repeat: no-repeat !important;
+          background-position: center !important;
+          background-size: cover !important;
           border-radius: 0.5rem;
           overflow: hidden;
           opacity: ${state.status === 'loading' ? 0.7 : 1};
           border: ${file ? '1px solid #464646' : '1px dashed #919191'};
+
+          &--dragging {
+            background: #e5e9ef;
+          }
 
           input {
             visibility: hidden;
