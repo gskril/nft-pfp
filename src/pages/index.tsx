@@ -33,7 +33,7 @@ export default function Home() {
         />
         <meta
           property="og:image"
-          content="https://mintyourpfp.xyz/sharing.png"
+          content="https://mintyourpfp.xyz/sharing.jpg"
         />
       </Head>
 
