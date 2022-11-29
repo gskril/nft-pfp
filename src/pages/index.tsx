@@ -4,8 +4,8 @@ import { useState } from 'react'
 
 import { getOpenseaUrl } from '../utils/contract'
 import Button from '../components/Button'
-import Footer from '../components/Footer'
 import Hero from '../components/Hero'
+import Layout from '../components/Layout'
 import Mint from '../components/Mint'
 import Modal from '../components/Modal'
 import type { State } from '../types'
@@ -22,28 +22,16 @@ export default function Home() {
     <>
       <Toaster />
 
-      <div className="layout">
-        <div />
+      <Layout hero={<Hero />}>
+        <Uploader state={state} setState={setState} />
+        <Mint state={state} setIsMintComplete={setIsMintComplete} />
 
-        <main>
-          <Hero />
-          <div className="interactive">
-            <Uploader state={state} setState={setState} />
-            <Mint state={state} setIsMintComplete={setIsMintComplete} />
-
-            {!isMintComplete && (
-              <button
-                className="help"
-                onClick={() => setIsHelperModalOpen(true)}
-              >
-                How does it work?
-              </button>
-            )}
-          </div>
-        </main>
-
-        <Footer />
-      </div>
+        {!isMintComplete && (
+          <button className="help" onClick={() => setIsHelperModalOpen(true)}>
+            How does it work?
+          </button>
+        )}
+      </Layout>
 
       {isHelperModalOpen && (
         <div className="help-modal">
@@ -100,39 +88,6 @@ export default function Home() {
       )}
 
       <style jsx>{`
-        .layout {
-          padding: 1rem;
-          display: flex;
-          gap: 3rem;
-          min-height: 100vh;
-          flex-direction: column;
-          align-items: center;
-          justify-content: space-around;
-          align-items: stretch;
-
-          @media (min-width: 560px) {
-            padding: 1.5rem 2rem;
-          }
-
-          main {
-            display: flex;
-            gap: 1.5rem;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-grow: 1;
-          }
-
-          .interactive {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            width: 100%;
-            max-width: 22rem;
-          }
-        }
-
         .help {
           opacity: 0.5;
           border: none;
