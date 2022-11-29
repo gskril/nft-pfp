@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useNetwork } from 'wagmi'
+import Link from 'next/link'
 
 import { getContractAddress } from '../utils/contract'
 import Feedback from './Feedback'
 
 export default function Footer() {
+  const [isHome, setIsHome] = useState(false)
+  useEffect(() => setIsHome(window.location.pathname === '/'), [])
+
   const { chain } = useNetwork()
 
   const [mounted, setMounted] = useState(false)
@@ -31,20 +35,17 @@ export default function Footer() {
         </div>
 
         <div className="links">
+          <span>
+            {isHome && <Link href="/ens">ENS Avatar</Link>}
+            {!isHome && <Link href="/">Home</Link>}
+          </span>
+
           <a
             href="https://github.com/gskril/nft-pfp"
             target="_blank"
             rel="noreferrer"
           >
             GitHub
-          </a>
-
-          <a
-            href={mounted ? etherscanUrl : ''}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Etherscan
           </a>
 
           <button onClick={() => setIsFeedbackOpen(!isFeedbackOpen)}>
