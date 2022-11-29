@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { usePlausible } from 'next-plausible'
 import toast from 'react-hot-toast'
 
-import { ArrowIcon, LoadingIcon, SuccessIcon } from '../assets/icons'
+import { ArrowIcon, LoadingIcon } from '../assets/icons'
 import handleSubmit from '../utils/handleSubmit'
 import Success from './Success'
 import type { State } from '../types'

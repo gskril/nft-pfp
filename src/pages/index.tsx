@@ -1,6 +1,7 @@
 import { Toaster } from 'react-hot-toast'
 import { useNetwork } from 'wagmi'
 import { useState } from 'react'
+import Head from 'next/head'
 
 import { getOpenseaUrl } from '../utils/contract'
 import Button from '../components/Button'
@@ -20,6 +21,22 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <title>Mint Your PFP</title>
+        <meta property="og:title" content="Mint Your PFP" />
+        <meta property="twitter:creator" content="@gregskril" />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta name="description" content="Easily mint an image as an NFT" />
+        <meta
+          property="og:description"
+          content="Easily mint an image as an NFT"
+        />
+        <meta
+          property="og:image"
+          content="https://mintyourpfp.xyz/sharing.png"
+        />
+      </Head>
+
       <Toaster />
 
       <Layout hero={<Hero />}>
