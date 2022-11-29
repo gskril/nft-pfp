@@ -2,7 +2,10 @@
 
 This is a simple app to upload/pin an image to IPFS and mint it as an NFT on a shared Ethereum smart contract.
 
-Built on top of the [OpenNFT](https://github.com/DigOppGroup/OpenNFT) contract.
+Built on top of the [OpenNFT](https://github.com/DigOppGroup/OpenNFT) contract:
+
+- Mainnet: [0x4A4f4A202C840f7247CfCb429e1B41A5509176D8](https://etherscan.io/address/0x4A4f4A202C840f7247CfCb429e1B41A5509176D8)
+- Goerli: [0xfbaD712D849144f0471cE5d2e47E6295042C8625](https://goerli.etherscan.io/address/0xfbaD712D849144f0471cE5d2e47E6295042C8625)
 
 ## Getting Started
 
