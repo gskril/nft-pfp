@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { usePlausible } from 'next-plausible'
 import toast from 'react-hot-toast'
 
 import { ArrowIcon, LoadingIcon, SuccessIcon } from '../assets/icons'
@@ -12,10 +13,23 @@ type UploaderProps = {
 }
 
 export default function Uploader({ state, setState }: UploaderProps) {
+  const plausible = usePlausible()
+
   const [isDragging, setIsDragging] = useState<boolean>(false)
   const [file, setFile] = useState<File | undefined | null>(null)
   const [name, setName] = useState<string | undefined | null>(null)
   const [fileUrl, setFileUrl] = useState<string | undefined | null>(null)
+
+  useEffect(() => {
+    if (state.status === 'error') {
+      toast.error(state.message!)
+      plausible('IPFS Upload', { props: { status: 'error' } })
+    } else if (state.status === 'success') {
+      toast.success('Pinned to IPFS', { duration: 3000 })
+      plausible('IPFS Upload', { props: { status: 'success' } })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state])
 
   if (state.status === 'success') {
     const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${state?.message}`
