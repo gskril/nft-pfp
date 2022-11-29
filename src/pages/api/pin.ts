@@ -29,12 +29,21 @@ export default async function handler(
   const imageBuffer = Buffer.from(image, 'base64')
   fs.writeFileSync(imgPath, imageBuffer)
 
+  // Create the Pinata metadata
+  const options = {
+    pinataMetadata: {
+      name: name as string,
+    },
+  }
+
   // Pin the image to IPFS
-  const imgHash = await pinata.pinFromFS(imgPath).then((res) => res.IpfsHash)
+  const imgHash = await pinata
+    .pinFromFS(imgPath, options)
+    .then((res) => res.IpfsHash)
 
   // Create the metadata JSON file
   const nftMetadata = {
-    name: name,
+    name: name as string,
     description: 'NFT avatar',
     image: `ipfs://${imgHash}`,
   }
@@ -43,7 +52,7 @@ export default async function handler(
   fs.writeFileSync(metadataPath, JSON.stringify(nftMetadata))
 
   // Pin the metadata to IPFS
-  const response = await pinata.pinFromFS(metadataPath)
+  const response = await pinata.pinFromFS(metadataPath, options)
 
   res.status(200).json(response)
 
