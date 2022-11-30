@@ -39,8 +39,6 @@ export default function Home() {
 
   useEffect(() => setIsMounted(true), [])
 
-  if (!isMounted) return null
-
   return (
     <>
       <Head>
@@ -71,45 +69,49 @@ export default function Home() {
         />
       )}
 
-      <Layout
-        size={address ? 'lg' : 'sm'}
-        hero={<Hero title="Set Your ENS Avatar" />}
-      >
-        {!address && <Button onClick={openConnectModal}>Connect Wallet</Button>}
+      {isMounted && (
+        <Layout
+          size={address ? 'lg' : 'sm'}
+          hero={<Hero title="Set Your ENS Avatar" />}
+        >
+          {!address && (
+            <Button onClick={openConnectModal}>Connect Wallet</Button>
+          )}
 
-        {isLoading && <p>Loading...</p>}
-        {isError && <p>Error...</p>}
+          {isLoading && <p>Loading...</p>}
+          {isError && <p>Error...</p>}
 
-        {address && nfts && !isLoading && (
-          <>
-            <div className="nfts">
-              {nfts.map((nft) => {
-                return (
-                  <div
-                    className="nft"
-                    key={nft.permalink}
-                    onClick={() => {
-                      setSelectedNft(nft)
-                      setIsModalOpen(true)
-                    }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={nft.image_thumbnail_url} alt={nft.name} />
-                  </div>
-                )
-              })}
-            </div>
-          </>
-        )}
+          {address && nfts && !isLoading && (
+            <>
+              <div className="nfts">
+                {nfts.map((nft) => {
+                  return (
+                    <div
+                      className="nft"
+                      key={nft.permalink}
+                      onClick={() => {
+                        setSelectedNft(nft)
+                        setIsModalOpen(true)
+                      }}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={nft.image_thumbnail_url} alt={nft.name} />
+                    </div>
+                  )
+                })}
+              </div>
+            </>
+          )}
 
-        {isModalOpen && (
-          <TransactionModal
-            setIsOpen={setIsModalOpen}
-            nft={selectedNft!}
-            setIsAvatarSet={setIsAvatarSet}
-          />
-        )}
-      </Layout>
+          {isModalOpen && (
+            <TransactionModal
+              setIsOpen={setIsModalOpen}
+              nft={selectedNft!}
+              setIsAvatarSet={setIsAvatarSet}
+            />
+          )}
+        </Layout>
+      )}
 
       <style jsx>{`
         .nfts {
