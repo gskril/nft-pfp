@@ -21,6 +21,7 @@ import Layout from '../components/Layout'
 import Modal from '../components/Modal'
 import type { Nft } from '../types'
 import useNfts from '../hooks/useNfts'
+import Hero from '../components/Hero'
 
 export default function Home() {
   const { address } = useAccount()
@@ -39,31 +40,35 @@ export default function Home() {
     <>
       <Toaster />
 
-      <Layout size="lg">
+      <Layout
+        size={address ? 'lg' : 'sm'}
+        hero={<Hero title="Set Your ENS Avatar" />}
+      >
         {!address && <Button onClick={openConnectModal}>Connect Wallet</Button>}
 
         {isLoading && <p>Loading...</p>}
         {isError && <p>Error...</p>}
 
-        {nfts && (
-          <div className="nfts">
-            {nfts.map((nft) => {
-              return (
-                <div
-                  className="nft"
-                  key={nft.permalink}
-                  onClick={() => {
-                    setSelectedNft(nft)
-                    setIsModalOpen(true)
-                  }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={nft.image_thumbnail_url} alt={nft.name} />
-                  <span>{nft.name}</span>
-                </div>
-              )
-            })}
-          </div>
+        {address && nfts && (
+          <>
+            <div className="nfts">
+              {nfts.map((nft) => {
+                return (
+                  <div
+                    className="nft"
+                    key={nft.permalink}
+                    onClick={() => {
+                      setSelectedNft(nft)
+                      setIsModalOpen(true)
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={nft.image_thumbnail_url} alt={nft.name} />
+                  </div>
+                )
+              })}
+            </div>
+          </>
         )}
 
         {isModalOpen && (
@@ -73,9 +78,14 @@ export default function Home() {
 
       <style jsx>{`
         .nfts {
+          width: 100%;
           display: grid;
+          padding: 1rem;
           gap: 1.5rem 1rem;
-          grid-template-columns: repeat(3, 1fr);
+          border-radius: 0.5rem;
+          background-color: #fff;
+          box-shadow: var(--shadow);
+          grid-template-columns: repeat(auto-fill, minmax(9rem, 2fr));
         }
 
         .nft {
@@ -138,6 +148,14 @@ function TransactionModal({ nft, setIsOpen }: TransactionModalProps) {
       <Modal setIsOpen={setIsOpen}>
         The wallet you&apos;re connected with doesn&apos;t have a primary ENS
         name
+      </Modal>
+    )
+  }
+
+  if (chain!.id !== 1) {
+    return (
+      <Modal setIsOpen={setIsOpen}>
+        This app only works on Ethereum Mainnet
       </Modal>
     )
   }

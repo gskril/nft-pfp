@@ -39,7 +39,7 @@ export default function Home() {
 
       <Toaster />
 
-      <Layout hero={<Hero />}>
+      <Layout hero={<Hero title="Mint Your PFP" />}>
         <Uploader state={state} setState={setState} />
         <Mint state={state} setIsMintComplete={setIsMintComplete} />
 

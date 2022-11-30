@@ -7,7 +7,7 @@ export default function Layout({
 }: {
   hero?: React.ReactNode
   children: React.ReactNode
-  size?: 'lg'
+  size?: 'lg' | 'sm'
 }) {
   return (
     <>
@@ -52,7 +52,7 @@ export default function Layout({
             align-items: center;
             gap: 1rem;
             width: 100%;
-            max-width: ${size === 'lg' ? '30rem' : '22rem'};
+            max-width: ${size === 'lg' ? '50rem' : '22rem'};
           }
         }
       `}</style>
