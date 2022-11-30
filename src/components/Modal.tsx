@@ -1,18 +1,27 @@
 type ModalProps = {
   setIsOpen: (isOpen: boolean) => void
+  canClose?: boolean
   children: React.ReactNode
   padding?: boolean
 }
 
 export default function Modal({
   setIsOpen,
+  canClose = true,
   children,
   padding = true,
 }: ModalProps) {
   return (
     <>
       <div className="modal">
-        <div className="background" onClick={() => setIsOpen(false)} />
+        <div
+          className="background"
+          onClick={() => {
+            if (canClose) {
+              setIsOpen(false)
+            }
+          }}
+        />
         <div className="content">{children}</div>
       </div>
 

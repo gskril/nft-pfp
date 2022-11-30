@@ -9,6 +9,7 @@ type ButtonProps = {
   disabled?: boolean
   children: string
   onClick?: () => void
+  style?: React.CSSProperties
 }
 
 export default function Button({
@@ -20,16 +21,22 @@ export default function Button({
   disabled,
   children,
   onClick,
+  style,
 }: ButtonProps) {
   return (
     <>
       {as === 'a' ? (
-        <a href={href} target="_blank" rel="noreferrer">
+        <a href={href} target="_blank" rel="noreferrer" style={style}>
           {children}
           {loading && <LoadingIcon theme="light" />}
         </a>
       ) : (
-        <button onClick={onClick} type="button" disabled={disabled}>
+        <button
+          onClick={onClick}
+          type="button"
+          style={style}
+          disabled={disabled}
+        >
           {children}
           {loading && <LoadingIcon theme="light" />}
         </button>

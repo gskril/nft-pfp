@@ -1,9 +1,9 @@
-export default function Hero() {
+export default function Hero({ title }: { title: string }) {
   return (
     <>
       <div className="hero">
         <span>The easiest way to</span>
-        <h1>Mint Your PFP</h1>
+        <h1>{title}</h1>
       </div>
 
       <style jsx>{`

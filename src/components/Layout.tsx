@@ -3,9 +3,11 @@ import Footer from './Footer'
 export default function Layout({
   hero,
   children,
+  size,
 }: {
   hero?: React.ReactNode
   children: React.ReactNode
+  size?: 'lg' | 'sm'
 }) {
   return (
     <>
@@ -50,7 +52,7 @@ export default function Layout({
             align-items: center;
             gap: 1rem;
             width: 100%;
-            max-width: 22rem;
+            max-width: ${size === 'lg' ? '50rem' : '22rem'};
           }
         }
       `}</style>
