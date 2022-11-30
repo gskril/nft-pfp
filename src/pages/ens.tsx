@@ -10,6 +10,7 @@ import { hash } from 'eth-ens-namehash'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useEffect, useState } from 'react'
 import Confetti from 'react-confetti'
+import Head from 'next/head'
 import useWindowSize from 'react-use/lib/useWindowSize'
 
 import {
@@ -42,6 +43,25 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <title>Set Your ENS Avatar</title>
+        <meta property="og:title" content="Set Your ENS Avatar" />
+        <meta property="twitter:creator" content="@gregskril" />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta
+          name="description"
+          content="Easily set an NFT as your ENS Avatar"
+        />
+        <meta
+          property="og:description"
+          content="Easily set an NFT as your ENS Avatar"
+        />
+        <meta
+          property="og:image"
+          content="https://mintyourpfp.xyz/sharing-ens.jpg"
+        />
+      </Head>
+
       {isAvatarSet && (
         <Confetti
           width={windowWidth}
