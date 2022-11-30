@@ -6,7 +6,7 @@ import {
   useWaitForTransaction,
 } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useState } from 'react'
+import { usePlausible } from 'next-plausible'
 import Confetti from 'react-confetti'
 import toast from 'react-hot-toast'
 import useWindowSize from 'react-use/lib/useWindowSize'
@@ -27,6 +27,7 @@ type MintProps = {
 }
 
 export default function Mint({ state, setIsMintComplete }: MintProps) {
+  const plausible = usePlausible()
   const { openConnectModal } = useConnectModal()
   const { width: windowWidth, height: windowHeight } = useWindowSize()
 
@@ -46,9 +47,12 @@ export default function Mint({ state, setIsMintComplete }: MintProps) {
     hash: data?.hash,
     onSuccess: () => {
       setIsMintComplete(true)
-      toast.success('Minted NFT', {
-        duration: 3000,
-      })
+      plausible('Mint NFT', { props: { status: 'success' } })
+      toast.success('Minted NFT', { duration: 3000 })
+    },
+    onError: () => {
+      plausible('Mint NFT', { props: { status: 'error' } })
+      toast.error('Error minting NFT')
     },
   })
 

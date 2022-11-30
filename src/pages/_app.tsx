@@ -1,15 +1,17 @@
 import '../styles/normalize.scss'
 import '../styles/fonts.scss'
 import '../styles/globals.scss'
-import type { AppProps } from 'next/app'
+
 import '@rainbow-me/rainbowkit/styles.css'
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { infuraProvider } from 'wagmi/providers/infura'
 import { publicProvider } from 'wagmi/providers/public'
+import PlausibleProvider from 'next-plausible'
+import type { AppProps } from 'next/app'
 
 const { chains, provider } = configureChains(
-  [chain.goerli, chain.mainnet],
+  [chain.mainnet, chain.goerli],
   [
     infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_KEY! }),
     publicProvider(),
@@ -29,10 +31,12 @@ const wagmiClient = createClient({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider chains={chains} modalSize="compact">
-        <Component {...pageProps} />
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <PlausibleProvider domain="mintyourpfp.xyz" trackOutboundLinks>
+      <WagmiConfig client={wagmiClient}>
+        <RainbowKitProvider chains={chains} modalSize="compact">
+          <Component {...pageProps} />
+        </RainbowKitProvider>
+      </WagmiConfig>
+    </PlausibleProvider>
   )
 }

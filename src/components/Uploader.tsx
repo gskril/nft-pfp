@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { usePlausible } from 'next-plausible'
 import toast from 'react-hot-toast'
 
-import { ArrowIcon, LoadingIcon, SuccessIcon } from '../assets/icons'
+import { ArrowIcon, LoadingIcon } from '../assets/icons'
 import handleSubmit from '../utils/handleSubmit'
 import Success from './Success'
 import type { State } from '../types'
@@ -12,9 +13,26 @@ type UploaderProps = {
 }
 
 export default function Uploader({ state, setState }: UploaderProps) {
+  const plausible = usePlausible()
+
+  const [isDragging, setIsDragging] = useState<boolean>(false)
   const [file, setFile] = useState<File | undefined | null>(null)
   const [name, setName] = useState<string | undefined | null>(null)
   const [fileUrl, setFileUrl] = useState<string | undefined | null>(null)
+
+  useEffect(() => {
+    if (state.status === 'error') {
+      toast.error(state.message!)
+
+      if (state.message! !== 'File is too large') {
+        plausible('IPFS Upload', { props: { status: 'error' } })
+      }
+    } else if (state.status === 'success') {
+      toast.success('Pinned to IPFS', { duration: 3000 })
+      plausible('IPFS Upload', { props: { status: 'success' } })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state])
 
   if (state.status === 'success') {
     const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${state?.message}`
@@ -33,8 +51,12 @@ export default function Uploader({ state, setState }: UploaderProps) {
         }}
       >
         <div
-          className="file"
-          onDragOver={(e) => e.preventDefault()}
+          className={`file ${isDragging ? 'file--dragging' : ''}`}
+          onDragOver={(e) => {
+            e.preventDefault()
+            setIsDragging(true)
+          }}
+          onDragLeave={() => setIsDragging(false)}
           style={{
             backgroundImage: file ? `url(${fileUrl})` : undefined,
           }}
@@ -113,13 +135,17 @@ export default function Uploader({ state, setState }: UploaderProps) {
           font-weight: 700;
           background-color: #fff;
           box-shadow: var(--shadow);
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: cover;
+          background-repeat: no-repeat !important;
+          background-position: center !important;
+          background-size: cover !important;
           border-radius: 0.5rem;
           overflow: hidden;
           opacity: ${state.status === 'loading' ? 0.7 : 1};
           border: ${file ? '1px solid #464646' : '1px dashed #919191'};
+
+          &--dragging {
+            background: #e5e9ef;
+          }
 
           input {
             visibility: hidden;

@@ -1,4 +1,3 @@
-import toast from 'react-hot-toast'
 import type { FormEvent } from 'react'
 import type { State } from '../types'
 
@@ -26,7 +25,7 @@ export default async function handleSubmit(
   // Check file size
   const dataSizeInMb = Buffer.byteLength(body) / 1024 / 1024
   if (dataSizeInMb > 4) {
-    setState({ status: 'error', message: 'File too large' })
+    setState({ status: 'error', message: 'File is too large' })
     return
   }
 
@@ -36,11 +35,6 @@ export default async function handleSubmit(
     body,
   })
     .then((res) => res.json())
-    .then((data) => {
-      setState({ status: 'success', message: data.IpfsHash })
-      toast.success('Pinned to IPFS', {
-        duration: 3000,
-      })
-    })
+    .then((data) => setState({ status: 'success', message: data.IpfsHash }))
     .catch((err) => setState({ status: 'error', message: err }))
 }
