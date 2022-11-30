@@ -15,7 +15,6 @@ export default function useNfts(address?: string): Response {
   useEffect(() => {
     if (address) {
       const url = `https://api.opensea.io/api/v1/assets?owner=${address}&limit=150`
-      console.log(url)
       setIsLoading(true)
 
       fetch(url)

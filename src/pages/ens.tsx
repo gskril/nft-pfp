@@ -6,30 +6,34 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from 'wagmi'
-import { Toaster } from 'react-hot-toast'
+import { hash } from 'eth-ens-namehash'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useEffect, useState } from 'react'
-import { hash } from 'eth-ens-namehash'
+import Confetti from 'react-confetti'
+import useWindowSize from 'react-use/lib/useWindowSize'
 
 import {
   ENS_RESOLVER,
   ENS_RESOLVER_ABI,
   getEtherscanUrl,
 } from '../utils/contract'
+import { usePlausible } from 'next-plausible'
 import Button from '../components/Button'
+import Hero from '../components/Hero'
 import Layout from '../components/Layout'
 import Modal from '../components/Modal'
 import type { Nft } from '../types'
 import useNfts from '../hooks/useNfts'
-import Hero from '../components/Hero'
 
 export default function Home() {
   const { address } = useAccount()
   const { openConnectModal } = useConnectModal()
   const { nfts, isLoading, isError } = useNfts(address)
+  const { width: windowWidth, height: windowHeight } = useWindowSize()
 
   const [isMounted, setIsMounted] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAvatarSet, setIsAvatarSet] = useState(false)
   const [selectedNft, setSelectedNft] = useState<Nft | null>(null)
 
   useEffect(() => setIsMounted(true), [])
@@ -38,7 +42,14 @@ export default function Home() {
 
   return (
     <>
-      <Toaster />
+      {isAvatarSet && (
+        <Confetti
+          width={windowWidth}
+          height={windowHeight}
+          colors={['#44BCFO', '#7298F8', '#A099FF', '#DE82FF', '#7F6AFF']}
+          style={{ zIndex: '1000' }}
+        />
+      )}
 
       <Layout
         size={address ? 'lg' : 'sm'}
@@ -72,7 +83,11 @@ export default function Home() {
         )}
 
         {isModalOpen && (
-          <TransactionModal setIsOpen={setIsModalOpen} nft={selectedNft!} />
+          <TransactionModal
+            setIsOpen={setIsModalOpen}
+            nft={selectedNft!}
+            setIsAvatarSet={setIsAvatarSet}
+          />
         )}
       </Layout>
 
@@ -121,9 +136,15 @@ export default function Home() {
 type TransactionModalProps = {
   nft: Nft
   setIsOpen: (isOpen: boolean) => void
+  setIsAvatarSet: (isAvatarSet: boolean) => void
 }
 
-function TransactionModal({ nft, setIsOpen }: TransactionModalProps) {
+function TransactionModal({
+  nft,
+  setIsOpen,
+  setIsAvatarSet,
+}: TransactionModalProps) {
+  const plausible = usePlausible()
   const { address } = useAccount()
   const { data: ensName } = useEnsName({ address })
 
@@ -141,9 +162,22 @@ function TransactionModal({ nft, setIsOpen }: TransactionModalProps) {
   })
 
   const { data, write } = useContractWrite(config)
-  const { data: success, isLoading, isError } = useWaitForTransaction(data)
+  const {
+    data: success,
+    isLoading,
+    isError,
+  } = useWaitForTransaction({
+    hash: data?.hash,
+    onSuccess: () => {
+      setIsAvatarSet(true)
+      plausible('Set ENS Avatar', { props: { status: 'success' } })
+    },
+    onError: () => {
+      plausible('Set ENS Avatar', { props: { status: 'error' } })
+    },
+  })
 
-  if (!nodehash) {
+  if (!nodehash || !address) {
     return (
       <Modal setIsOpen={setIsOpen}>
         The wallet you&apos;re connected with doesn&apos;t have a primary ENS
@@ -161,32 +195,55 @@ function TransactionModal({ nft, setIsOpen }: TransactionModalProps) {
   }
 
   return (
-    <Modal setIsOpen={setIsOpen}>
+    <Modal setIsOpen={setIsOpen} canClose={!data}>
+      <h2 className="text-center">Preview Your Profile</h2>
       <div className="content">
+        <div className="previews">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={nft.image_thumbnail_url} alt={nft.name} />
+
+          <div className="connections">
+            <Profile
+              name={ensName}
+              address={address}
+              image={nft.image_thumbnail_url}
+            />
+            <Profile
+              site="rainbow"
+              name={ensName}
+              address={address}
+              image={nft.image_thumbnail_url}
+            />
+          </div>
+        </div>
+
         {!data && (
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={nft.image_thumbnail_url} alt={nft.name} />
-
-            <Button disabled={!write} onClick={() => write?.()}>
-              Set Avatar
-            </Button>
-          </>
+          <Button disabled={!write} onClick={() => write?.()}>
+            Set Avatar
+          </Button>
         )}
 
-        {data && (
-          <a
-            href={getEtherscanUrl(data, chain)}
-            target="_blank"
-            rel="noreferrer"
-          >
+        {isLoading && (
+          <Button as="a" href={getEtherscanUrl(data!, chain)} loading>
             View on Etherscan
-          </a>
+          </Button>
         )}
-        {isLoading && <p>Waiting for transaction...</p>}
-        {isError && <p>Error...</p>}
 
-        {success && <p>Success!</p>}
+        {isError && (
+          <Button as="a" href={getEtherscanUrl(data!, chain)} state="error">
+            Transaction failed
+          </Button>
+        )}
+
+        {success && (
+          <Button
+            as="a"
+            href={`https://app.ens.domains/name/${ensName}`}
+            state="success"
+          >
+            View in ENS Manager
+          </Button>
+        )}
       </div>
 
       <style jsx>{`
@@ -201,8 +258,124 @@ function TransactionModal({ nft, setIsOpen }: TransactionModalProps) {
         img {
           aspect-ratio: 1;
           object-fit: cover;
+          border-radius: 0.5rem;
+        }
+
+        .previews {
+          display: flex;
+          flex-direction: column-reverse;
+
+          align-items: center;
+          gap: 1rem;
+
+          @media (min-width: 32em) {
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+          }
+
+          @media (min-width: 38em) {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .connections {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+
+            @media (min-width: 32em) {
+              gap: 1rem;
+            }
+          }
         }
       `}</style>
     </Modal>
+  )
+}
+
+function Profile({
+  name,
+  address,
+  image,
+  site,
+}: {
+  name: string
+  address: string
+  image: string
+  site?: 'rainbow'
+}) {
+  return (
+    <>
+      <div className={`profile ${site}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={image} alt="" width={52} height={52} />
+        <div className="right">
+          <span className="name">{name}</span>
+          <span className="address">{`${address.slice(0, 6)}...${address.slice(
+            -5
+          )}`}</span>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .profile {
+          display: flex;
+          flex-direction: row;
+          gap: 0.625rem;
+          background-color: #fff;
+          border: 2px solid #e2e8ed;
+          box-shadow: var(--shadow);
+          padding: 0.5rem 1.125rem 0.5rem 0.5rem;
+          border-radius: 10rem;
+          width: fit-content;
+          overflow: hidden;
+
+          img {
+            border-radius: 5rem;
+            background-color: #dce5f1;
+          }
+
+          .right {
+            display: flex;
+            font-weight: 600;
+            flex-direction: column;
+            justify-content: center;
+
+            .name {
+              font-size: 1.25rem;
+            }
+
+            .address {
+              font-size: 0.9375rem;
+              color: rgba(0, 0, 0, 0.4);
+            }
+          }
+
+          &.rainbow {
+            background: linear-gradient(0deg, #525258, #2b2d30);
+            color: #fff;
+            padding: 0.375rem 0.75rem 0.375rem 0.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            gap: 0.5rem;
+
+            img {
+              width: 2rem;
+              height: 2rem;
+            }
+
+            .right {
+              .name {
+                font-size: 1rem;
+              }
+
+              .address {
+                display: none;
+              }
+            }
+          }
+        }
+      `}</style>
+    </>
   )
 }
