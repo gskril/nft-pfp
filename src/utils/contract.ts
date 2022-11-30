@@ -30,3 +30,27 @@ export const getOpenseaUrl = (chain?: Chain) => {
     ? 'https://testnets.opensea.io/collection/opennft-iboh5rhaks?search[sortAscending]=false&search[sortBy]=CREATED_DATE'
     : 'https://opensea.io/collection/opennft-v3?search[sortAscending]=false&search[sortBy]=CREATED_DATE'
 }
+
+/**
+ * ==============================
+ * ENS CONTRACT CONSTANTS
+ * ==============================
+ */
+
+export const ENS_RESOLVER_ABI = [
+  {
+    constant: false,
+    inputs: [
+      { internalType: 'bytes32', name: 'node', type: 'bytes32' },
+      { internalType: 'string', name: 'key', type: 'string' },
+      { internalType: 'string', name: 'value', type: 'string' },
+    ],
+    name: 'setText',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+]
+
+export const ENS_RESOLVER = '0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41'
