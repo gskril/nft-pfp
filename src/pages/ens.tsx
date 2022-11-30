@@ -80,7 +80,7 @@ export default function Home() {
         {isLoading && <p>Loading...</p>}
         {isError && <p>Error...</p>}
 
-        {address && nfts && (
+        {address && nfts && !isLoading && (
           <>
             <div className="nfts">
               {nfts.map((nft) => {
