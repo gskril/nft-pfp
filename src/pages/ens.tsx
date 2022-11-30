@@ -1,6 +1,7 @@
 import {
   useAccount,
   useNetwork,
+  useEnsName,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
@@ -8,6 +9,7 @@ import {
 import { Toaster } from 'react-hot-toast'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useEffect, useState } from 'react'
+import { hash } from 'eth-ens-namehash'
 
 import {
   ENS_RESOLVER,
@@ -112,9 +114,10 @@ type TransactionModalProps = {
 }
 
 function TransactionModal({ nft, setIsOpen }: TransactionModalProps) {
-  // create hook to get nodehash of connected ENS name from the graph
-  const nodehash =
-    '0xc670b4d01b86494f31a5eaed0c4423c87de30755fa61604cac330074b7ac87f2' // hardcoded for gregskril.eth
+  const { address } = useAccount()
+  const { data: ensName } = useEnsName({ address })
+
+  const nodehash = ensName && hash(ensName)
   const avatarStr = `eip155:1/${nft.asset_contract.schema_name.toLowerCase()}:${
     nft.asset_contract.address
   }/${nft.token_id}`
@@ -129,6 +132,15 @@ function TransactionModal({ nft, setIsOpen }: TransactionModalProps) {
 
   const { data, write } = useContractWrite(config)
   const { data: success, isLoading, isError } = useWaitForTransaction(data)
+
+  if (!nodehash) {
+    return (
+      <Modal setIsOpen={setIsOpen}>
+        The wallet you&apos;re connected with doesn&apos;t have a primary ENS
+        name
+      </Modal>
+    )
+  }
 
   return (
     <Modal setIsOpen={setIsOpen}>
