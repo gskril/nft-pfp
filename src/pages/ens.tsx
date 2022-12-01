@@ -11,6 +11,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useEffect, useState } from 'react'
 import Confetti from 'react-confetti'
 import Head from 'next/head'
+import Image from 'next/image'
 import useWindowSize from 'react-use/lib/useWindowSize'
 
 import {
@@ -25,6 +26,8 @@ import Layout from '../components/Layout'
 import Modal from '../components/Modal'
 import type { Nft } from '../types'
 import useNfts from '../hooks/useNfts'
+
+const isDev = process.env.NODE_ENV === 'development'
 
 export default function Home() {
   const { address } = useAccount()
@@ -168,6 +171,7 @@ function TransactionModal({
 }: TransactionModalProps) {
   const plausible = usePlausible()
   const { address } = useAccount()
+  const { ensNames } = useNfts(address)
   const { data: ensName } = useEnsName({ address })
 
   const nodehash = ensName && hash(ensName)
@@ -202,8 +206,25 @@ function TransactionModal({
   if (!nodehash || !address) {
     return (
       <Modal setIsOpen={setIsOpen}>
-        The wallet you&apos;re connected with doesn&apos;t have a primary ENS
-        name
+        <div style={{ textAlign: 'center' }}>
+          {ensNames.length === 0 && (
+            <>
+              <p>Your connected address doesn&apos;t own an ENS name</p>
+              <Button as="a" href="https://app.ens.domains/">
+                Register a name
+              </Button>
+            </>
+          )}
+
+          {ensNames.length > 0 && (
+            <>
+              <p>Your connected address doesn&apos;t have a primary ENS name</p>
+              <Button as="a" href="https://ezens.xyz/">
+                Set your primary name
+              </Button>
+            </>
+          )}
+        </div>
       </Modal>
     )
   }
@@ -221,8 +242,16 @@ function TransactionModal({
       <h2 className="text-center">Preview Your Profile</h2>
       <div className="content">
         <div className="previews">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={nft.image_thumbnail_url} alt={nft.name} />
+          <div className="nft-image">
+            <Image
+              src={`${
+                isDev ? 'http://localhost:3000' : 'https://mintyourpfp.xyz'
+              }/api/ens-avatar?name=${ensName}&src=${nft.image_thumbnail_url}`}
+              alt={nft.name}
+              width={240}
+              height={240}
+            />
+          </div>
 
           <div className="connections">
             <Profile
@@ -286,8 +315,8 @@ function TransactionModal({
         .previews {
           display: flex;
           flex-direction: column-reverse;
-
           align-items: center;
+          width: 100%;
           gap: 1rem;
 
           @media (min-width: 32em) {
@@ -297,6 +326,14 @@ function TransactionModal({
 
           @media (min-width: 38em) {
             grid-template-columns: 1fr 1fr;
+          }
+
+          .nft-image {
+            line-height: 1;
+            border-radius: 0.5rem;
+            background: #dadfe9;
+            overflow: hidden;
+            box-shadow: var(--shadow);
           }
 
           .connections {

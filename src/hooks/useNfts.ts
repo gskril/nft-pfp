@@ -3,12 +3,14 @@ import type { Nft } from '../types'
 
 type Response = {
   nfts: Nft[]
+  ensNames: Nft[]
   isLoading: boolean
   isError: boolean
 }
 
 export default function useNfts(address?: string): Response {
   const [nfts, setNfts] = useState<Nft[]>([])
+  const [ensNames, setEnsNames] = useState<Nft[]>([])
   const [isError, setIsError] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -20,16 +22,20 @@ export default function useNfts(address?: string): Response {
       fetch(url)
         .then((response) => response.json())
         .then((json) => {
-          // Exclude ENS names
-          const fetchedNfts = json.assets.filter(
-            (nft: Nft) => nft.asset_contract.name !== 'ENS'
+          // Set NFTs, not including ENS names
+          setNfts(
+            json.assets.filter((nft: Nft) => nft.asset_contract.name !== 'ENS')
           )
-          setNfts(fetchedNfts)
+
+          // Set ENS names
+          setEnsNames(
+            json.assets.filter((nft: Nft) => nft.asset_contract.name === 'ENS')
+          )
         })
         .catch(() => setIsError(true))
         .finally(() => setIsLoading(false))
     }
   }, [address])
 
-  return { nfts, isLoading, isError }
+  return { nfts, ensNames, isLoading, isError }
 }
