@@ -1,5 +1,6 @@
 import {
   useAccount,
+  useDisconnect,
   useNetwork,
   useEnsName,
   useContractWrite,
@@ -32,6 +33,7 @@ const isDev = process.env.NODE_ENV === 'development'
 
 export default function Home() {
   const { address } = useAccount()
+  const { disconnect } = useDisconnect()
   const { openConnectModal } = useConnectModal()
   const { nfts, isLoading, isError } = useNfts(address)
   const { width: windowWidth, height: windowHeight } = useWindowSize()
@@ -87,7 +89,23 @@ export default function Home() {
           {isLoading && <p>Loading...</p>}
           {isError && <p>Error...</p>}
 
-          {address && nfts && !isLoading && (
+          {address && !isLoading && nfts.length === 0 && (
+            <>
+              <p style={{ margin: '0' }}>
+                You don&apos;t have any NFTs in this wallet.
+              </p>
+              <Button
+                onClick={() => disconnect()}
+                style={{
+                  width: 'fit-content',
+                }}
+              >
+                Disconnect
+              </Button>
+            </>
+          )}
+
+          {address && !isLoading && nfts.length > 0 && (
             <>
               <div className="nfts">
                 {nfts.map((nft) => {
