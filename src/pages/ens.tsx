@@ -7,6 +7,7 @@ import {
   useWaitForTransaction,
 } from 'wagmi'
 import { hash } from 'eth-ens-namehash'
+import { Toaster } from 'react-hot-toast'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useEffect, useState } from 'react'
 import Confetti from 'react-confetti'
@@ -62,6 +63,8 @@ export default function Home() {
           content="https://mintyourpfp.xyz/sharing-ens.jpg"
         />
       </Head>
+
+      <Toaster />
 
       {isAvatarSet && (
         <Confetti
