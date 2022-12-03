@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type { Chain } from 'wagmi'
 import type { Nft } from '../types'
 
 type Response = {
@@ -8,7 +9,7 @@ type Response = {
   isError: boolean
 }
 
-export default function useNfts(address?: string): Response {
+export default function useNfts(address?: string, chain?: Chain): Response {
   const [nfts, setNfts] = useState<Nft[]>([])
   const [ensNames, setEnsNames] = useState<Nft[]>([])
   const [isError, setIsError] = useState(false)
@@ -16,7 +17,9 @@ export default function useNfts(address?: string): Response {
 
   useEffect(() => {
     if (address) {
-      const url = `https://api.opensea.io/api/v1/assets?owner=${address}&limit=150`
+      const url = `https://${
+        chain?.id === 5 ? 'testnets-' : ''
+      }api.opensea.io/api/v1/assets?owner=${address}&limit=150`
       setIsLoading(true)
 
       fetch(url)
@@ -35,7 +38,7 @@ export default function useNfts(address?: string): Response {
         .catch(() => setIsError(true))
         .finally(() => setIsLoading(false))
     }
-  }, [address])
+  }, [address, chain])
 
   return { nfts, ensNames, isLoading, isError }
 }

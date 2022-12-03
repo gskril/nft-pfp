@@ -3,6 +3,7 @@ import {
   useDisconnect,
   useNetwork,
   useEnsName,
+  useEnsResolver,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
@@ -16,11 +17,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import useWindowSize from 'react-use/lib/useWindowSize'
 
-import {
-  ENS_RESOLVER,
-  ENS_RESOLVER_ABI,
-  getEtherscanUrl,
-} from '../utils/contract'
+import { ENS_RESOLVER_ABI, getEtherscanUrl } from '../utils/contract'
 import { usePlausible } from 'next-plausible'
 import Button from '../components/Button'
 import Hero from '../components/Hero'
@@ -32,10 +29,11 @@ import useNfts from '../hooks/useNfts'
 const isDev = process.env.NODE_ENV === 'development'
 
 export default function Home() {
+  const { chain } = useNetwork()
   const { address } = useAccount()
   const { disconnect } = useDisconnect()
   const { openConnectModal } = useConnectModal()
-  const { nfts, isLoading, isError } = useNfts(address)
+  const { nfts, isLoading, isError } = useNfts(address, chain)
   const { width: windowWidth, height: windowHeight } = useWindowSize()
 
   const [isMounted, setIsMounted] = useState(false)
@@ -194,6 +192,9 @@ function TransactionModal({
   const { address } = useAccount()
   const { ensNames } = useNfts(address)
   const { data: ensName } = useEnsName({ address })
+  const { data: ensResolver } = useEnsResolver({
+    name: ensName ?? undefined,
+  })
 
   const nodehash = ensName && hash(ensName)
   const avatarStr = `eip155:1/${nft.asset_contract.schema_name.toLowerCase()}:${
@@ -202,7 +203,7 @@ function TransactionModal({
 
   const { chain } = useNetwork()
   const { config } = usePrepareContractWrite({
-    address: ENS_RESOLVER,
+    address: ensResolver?.address,
     abi: ENS_RESOLVER_ABI,
     functionName: 'setText',
     args: [nodehash, 'avatar', avatarStr],
@@ -224,7 +225,7 @@ function TransactionModal({
     },
   })
 
-  if (!nodehash || !address) {
+  if (!ensName || !address) {
     return (
       <Modal setIsOpen={setIsOpen}>
         <div style={{ textAlign: 'center' }}>
@@ -246,14 +247,6 @@ function TransactionModal({
             </>
           )}
         </div>
-      </Modal>
-    )
-  }
-
-  if (chain!.id !== 1) {
-    return (
-      <Modal setIsOpen={setIsOpen}>
-        This app only works on Ethereum Mainnet
       </Modal>
     )
   }

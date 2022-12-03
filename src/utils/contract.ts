@@ -52,5 +52,3 @@ export const ENS_RESOLVER_ABI = [
     type: 'function',
   },
 ]
-
-export const ENS_RESOLVER = '0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41'
