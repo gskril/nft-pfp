@@ -232,7 +232,12 @@ function TransactionModal({
           {ensNames.length === 0 && (
             <>
               <p>Your connected address doesn&apos;t own an ENS name</p>
-              <Button as="a" href="https://app.ens.domains/">
+              <Button
+                as="a"
+                href={`https://${
+                  chain?.id === 5 ? 'alpha' : 'app'
+                }.ens.domains/`}
+              >
                 Register a name
               </Button>
             </>
@@ -303,7 +308,11 @@ function TransactionModal({
         {success && (
           <Button
             as="a"
-            href={`https://app.ens.domains/name/${ensName}`}
+            href={`https://${
+              chain?.id === 5
+                ? 'alpha.ens.domains/profile'
+                : 'app.ens.domains/name'
+            }/${ensName}`}
             state="success"
           >
             View in ENS Manager
