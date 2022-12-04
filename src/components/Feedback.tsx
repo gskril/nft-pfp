@@ -1,7 +1,8 @@
-import { ArrowIcon, LoadingIcon } from '../assets/icons'
+import { ArrowIcon, ErrorIcon, LoadingIcon, SuccessIcon } from '../assets/icons'
 import { FormEvent, useState } from 'react'
-import toast from 'react-hot-toast'
 import Modal from './Modal'
+import toast from 'react-hot-toast'
+import type { Status } from '../types'
 
 type FeedbackProps = {
   setIsOpen: (isOpen: boolean) => void
@@ -9,13 +10,13 @@ type FeedbackProps = {
 
 export default function Feedback({ setIsOpen }: FeedbackProps) {
   const [text, setText] = useState<string | undefined | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [status, setStatus] = useState<Status>('idle')
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
 
     if (!text) return
-    setIsLoading(true)
+    setStatus('loading')
 
     const res = await fetch('/api/notify', {
       method: 'POST',
@@ -27,11 +28,11 @@ export default function Feedback({ setIsOpen }: FeedbackProps) {
 
     if (res.ok === true) {
       toast.success('Feedback sent!')
+      setStatus('success')
     } else {
       toast.error(res.statusText)
+      setStatus('error')
     }
-
-    setIsLoading(false)
   }
 
   return (
@@ -47,8 +48,12 @@ export default function Feedback({ setIsOpen }: FeedbackProps) {
             onChange={(e) => setText(e.target.value)}
           />
           <button type="submit" disabled={!text}>
-            {isLoading ? (
+            {status === 'loading' ? (
               <LoadingIcon />
+            ) : status === 'error' ? (
+              <ErrorIcon />
+            ) : status === 'success' ? (
+              <SuccessIcon />
             ) : (
               <ArrowIcon disabled={!text || text.length < 3} />
             )}

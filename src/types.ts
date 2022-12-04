@@ -1,7 +1,7 @@
-type LoadingState = 'idle' | 'loading' | 'success' | 'error'
+export type Status = 'idle' | 'loading' | 'success' | 'error'
 
 export type State = {
-  status: LoadingState
+  status: Status
   message?: string
 }
 

@@ -11,6 +11,9 @@ export default async function handler(
 
   await fetch(endpoint + text)
     .then((res) => res.json())
-    .then((json) => res.status(200).json(json))
+    .then((json) => {
+      if (json.error) throw new Error(json.error)
+      res.status(200).json(json)
+    })
     .catch((err) => res.status(500).json({ error: err }))
 }
