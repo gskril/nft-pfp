@@ -33,7 +33,7 @@ export default function Home() {
   const { address } = useAccount()
   const { disconnect } = useDisconnect()
   const { openConnectModal } = useConnectModal()
-  const { nfts, isLoading, isError } = useNfts(address, chain)
+  const { nfts, ensNames, isLoading, isError } = useNfts(address, chain)
   const { width: windowWidth, height: windowHeight } = useWindowSize()
 
   const [isMounted, setIsMounted] = useState(false)
@@ -117,7 +117,7 @@ export default function Home() {
                       }}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={nft.image_thumbnail_url} alt={nft.name} />
+                      <img src={nft?.image_thumbnail_url} alt={nft?.name} />
                     </div>
                   )
                 })}
@@ -127,8 +127,9 @@ export default function Home() {
 
           {isModalOpen && (
             <TransactionModal
-              setIsOpen={setIsModalOpen}
               nft={selectedNft!}
+              ensNames={ensNames}
+              setIsOpen={setIsModalOpen}
               setIsAvatarSet={setIsAvatarSet}
             />
           )}
@@ -179,18 +180,19 @@ export default function Home() {
 
 type TransactionModalProps = {
   nft: Nft
+  ensNames: Nft[]
   setIsOpen: (isOpen: boolean) => void
   setIsAvatarSet: (isAvatarSet: boolean) => void
 }
 
 function TransactionModal({
   nft,
+  ensNames,
   setIsOpen,
   setIsAvatarSet,
 }: TransactionModalProps) {
   const plausible = usePlausible()
   const { address } = useAccount()
-  const { ensNames } = useNfts(address)
   const { data: ensName } = useEnsName({ address })
   const { data: ensResolver } = useEnsResolver({
     name: ensName ?? undefined,
@@ -276,7 +278,7 @@ function TransactionModal({
             <Profile
               name={ensName}
               address={address}
-              image={nft.image_thumbnail_url}
+              image={nft?.image_thumbnail_url}
             />
             <Profile
               site="rainbow"
@@ -383,7 +385,7 @@ function Profile({
 }: {
   name: string
   address: string
-  image: string
+  image: string | undefined
   site?: 'rainbow'
 }) {
   return (

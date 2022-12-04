@@ -16,29 +16,50 @@ export default function useNfts(address?: string, chain?: Chain): Response {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    if (address) {
-      const url = `https://${
-        chain?.id === 5 ? 'testnets-' : ''
-      }api.opensea.io/api/v1/assets?owner=${address}&limit=150`
+    async function fetchData() {
       setIsLoading(true)
 
-      fetch(url)
-        .then((response) => response.json())
-        .then((json) => {
-          // Set NFTs, not including ENS names
-          setNfts(
-            json.assets.filter((nft: Nft) => nft.asset_contract.name !== 'ENS')
-          )
+      try {
+        let cursor: string | null = ''
+        let newNFTs: Nft[] = []
+        let newEnsNames: Nft[] = []
 
-          // Set ENS names
-          setEnsNames(
-            json.assets.filter((nft: Nft) => nft.asset_contract.name === 'ENS')
+        while (cursor !== null) {
+          const response = await fetch(
+            `https://${
+              chain?.id === 5 ? 'testnets-' : ''
+            }api.opensea.io/api/v1/assets?owner=${address}&limit=50&cursor=${cursor}`
           )
-        })
-        .catch(() => setIsError(true))
-        .finally(() => setIsLoading(false))
+          const data = await response.json()
+
+          newNFTs = newNFTs.concat(
+            data.assets.filter((nft: Nft) => nft.asset_contract.name !== 'ENS')
+          )
+          setNfts(nfts.concat(newNFTs))
+
+          newEnsNames = newEnsNames.concat(
+            data.assets.filter((nft: Nft) => nft.asset_contract.name === 'ENS')
+          )
+          setEnsNames(ensNames.concat(newEnsNames))
+
+          const next = data.next as string
+          cursor = next === '' ? null : next
+
+          // Can load the rest in the background
+          setIsLoading(false)
+        }
+      } catch (error) {
+        setIsError(true)
+        setIsLoading(false)
+      }
     }
-  }, [address, chain])
+
+    if (address) {
+      fetchData()
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address])
 
   return { nfts, ensNames, isLoading, isError }
 }

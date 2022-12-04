@@ -7,7 +7,7 @@ export type State = {
 
 export type Nft = {
   name: string
-  image_thumbnail_url: string
+  image_thumbnail_url: string | undefined
   asset_contract: {
     name: string
     address: string
