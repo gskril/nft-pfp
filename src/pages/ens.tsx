@@ -192,6 +192,8 @@ function TransactionModal({
   setIsAvatarSet,
 }: TransactionModalProps) {
   const plausible = usePlausible()
+
+  const { chain } = useNetwork()
   const { address } = useAccount()
   const { data: ensName } = useEnsName({ address })
   const { data: ensResolver } = useEnsResolver({
@@ -203,8 +205,7 @@ function TransactionModal({
     nft.asset_contract.address
   }/${nft.token_id}`
 
-  const { chain } = useNetwork()
-  const { config } = usePrepareContractWrite({
+  const { config, isError: prepareWriteError } = usePrepareContractWrite({
     address: ensResolver?.address,
     abi: ENS_RESOLVER_ABI,
     functionName: 'setText',
@@ -293,6 +294,12 @@ function TransactionModal({
           <Button disabled={!write} onClick={() => write?.()}>
             Set Avatar
           </Button>
+        )}
+
+        {prepareWriteError && (
+          <p className="text-center" style={{ color: '#ED7B7B' }}>
+            Error preparing transaction
+          </p>
         )}
 
         {isLoading && (
@@ -416,6 +423,9 @@ function Profile({
 
           img {
             border-radius: 5rem;
+            width: 3.25rem;
+            height: 3.25rem;
+            object-fit: cover;
             background-color: #dce5f1;
           }
 
