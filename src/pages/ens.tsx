@@ -18,6 +18,7 @@ import Image from 'next/image'
 import useWindowSize from 'react-use/lib/useWindowSize'
 
 import { ENS_RESOLVER_ABI, getEtherscanUrl } from '../utils/contract'
+import { Profile } from '../components/Profile'
 import { usePlausible } from 'next-plausible'
 import Button from '../components/Button'
 import Hero from '../components/Hero'
@@ -381,95 +382,5 @@ function TransactionModal({
         }
       `}</style>
     </Modal>
-  )
-}
-
-function Profile({
-  name,
-  address,
-  image,
-  site,
-}: {
-  name: string
-  address: string
-  image: string | undefined
-  site?: 'rainbow'
-}) {
-  return (
-    <>
-      <div className={`profile ${site}`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={image} alt="" width={52} height={52} />
-        <div className="right">
-          <span className="name">{name}</span>
-          <span className="address">{`${address.slice(0, 6)}...${address.slice(
-            -5
-          )}`}</span>
-        </div>
-      </div>
-
-      <style jsx>{`
-        .profile {
-          display: flex;
-          flex-direction: row;
-          gap: 0.625rem;
-          background-color: #fff;
-          border: 2px solid #e2e8ed;
-          box-shadow: var(--shadow);
-          padding: 0.5rem 1.125rem 0.5rem 0.5rem;
-          border-radius: 10rem;
-          width: fit-content;
-          overflow: hidden;
-
-          img {
-            border-radius: 5rem;
-            width: 3.25rem;
-            height: 3.25rem;
-            object-fit: cover;
-            background-color: #dce5f1;
-          }
-
-          .right {
-            display: flex;
-            font-weight: 600;
-            flex-direction: column;
-            justify-content: center;
-
-            .name {
-              font-size: 1.25rem;
-            }
-
-            .address {
-              font-size: 0.9375rem;
-              color: rgba(0, 0, 0, 0.4);
-            }
-          }
-
-          &.rainbow {
-            background: linear-gradient(0deg, #525258, #2b2d30);
-            color: #fff;
-            padding: 0.375rem 0.75rem 0.375rem 0.5rem;
-            border-radius: 0.5rem;
-            border: none;
-            gap: 0.5rem;
-
-            img {
-              width: 2rem;
-              height: 2rem;
-            }
-
-            .right {
-              .name {
-                font-size: 1rem;
-              }
-
-              .address {
-                display: none;
-              }
-            }
-          }
-        }
-      `}</style>
-    </>
   )
 }
