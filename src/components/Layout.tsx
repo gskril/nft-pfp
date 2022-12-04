@@ -1,3 +1,6 @@
+import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useAccount } from 'wagmi'
+
 import Footer from './Footer'
 
 export default function Layout({
@@ -9,10 +12,18 @@ export default function Layout({
   children: React.ReactNode
   size?: 'lg' | 'sm'
 }) {
+  const { address } = useAccount()
+
   return (
     <>
       <div className="layout">
-        <div />
+        <div className="nav">
+          {address && (
+            <div className="connect-wrapper">
+              <ConnectButton showBalance={false} chainStatus="none" />
+            </div>
+          )}
+        </div>
 
         <main>
           {hero}
@@ -26,7 +37,7 @@ export default function Layout({
         .layout {
           padding: 1rem;
           display: flex;
-          gap: 3rem;
+          gap: 2.5rem;
           min-height: 100vh;
           flex-direction: column;
           align-items: center;
@@ -35,6 +46,18 @@ export default function Layout({
 
           @media (min-width: 560px) {
             padding: 1.5rem 2rem;
+          }
+
+          .nav {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+
+            .connect-wrapper {
+              @media (min-width: 47em) {
+                position: absolute;
+              }
+            }
           }
 
           main {
