@@ -299,7 +299,7 @@ function TransactionModal({
 
         {prepareWriteError && (
           <p className="text-center" style={{ color: '#ED7B7B' }}>
-            Error preparing transaction
+            Only the controller of {ensName} can set the avatar
           </p>
         )}
 
