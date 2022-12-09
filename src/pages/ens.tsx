@@ -196,9 +196,9 @@ function TransactionModal({
 
   const { chain } = useNetwork()
   const { address } = useAccount()
-  const { data: ensName } = useEnsName({ address })
+  const { data: ensName } = useEnsName({ address, chainId: chain?.id })
   const { data: ensResolver } = useEnsResolver({
-    name: ensName ?? undefined,
+    name: ensName ?? undefined, chainId: chain?.id
   })
 
   const nodehash = ensName && hash(ensName)
