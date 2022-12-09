@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import type { Chain } from 'wagmi'
 import type { Nft } from '../types'
 
+const ENS_CONTRACT_ADDRESS = '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85';
+
 type Response = {
   nfts: Nft[]
   ensNames: Nft[]
@@ -33,12 +35,12 @@ export default function useNfts(address?: string, chain?: Chain): Response {
           const data = await response.json()
 
           newNFTs = newNFTs.concat(
-            data.assets.filter((nft: Nft) => nft.asset_contract.name !== 'ENS')
+            data.assets.filter((nft: Nft) => nft.asset_contract.address !== ENS_CONTRACT_ADDRESS)
           )
           setNfts(nfts.concat(newNFTs))
 
           newEnsNames = newEnsNames.concat(
-            data.assets.filter((nft: Nft) => nft.asset_contract.name === 'ENS')
+            data.assets.filter((nft: Nft) => nft.asset_contract.address === ENS_CONTRACT_ADDRESS)
           )
           setEnsNames(ensNames.concat(newEnsNames))
 
