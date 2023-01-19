@@ -34,7 +34,24 @@ export default async function handleSubmit(
     method: 'POST',
     body,
   })
-    .then((res) => res.json())
+    .then((res) => {
+      const errorMsg = 'Failed to upload to IPFS'
+
+      if (!res.ok) {
+        // Notify me via Telegram
+        fetch('/api/notify', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text: errorMsg }),
+        })
+
+        throw new Error(errorMsg)
+      }
+
+      return res.json()
+    })
     .then((data) => setState({ status: 'success', message: data.IpfsHash }))
-    .catch((err) => setState({ status: 'error', message: err }))
+    .catch((err) => setState({ status: 'error', message: err.message }))
 }
