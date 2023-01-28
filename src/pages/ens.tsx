@@ -319,9 +319,7 @@ function TransactionModal({
           <Button
             as="a"
             href={`https://${
-              chain?.id === 5
-                ? 'alpha.ens.domains/profile'
-                : 'app.ens.domains/name'
+              chain?.id === 5 ? 'alpha.ens.domains' : 'app.ens.domains/name'
             }/${ensName}`}
             state="success"
           >
