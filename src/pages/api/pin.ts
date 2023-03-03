@@ -1,15 +1,8 @@
+import { PinataPinResponse } from '@pinata/sdk'
 import fs from 'fs'
-import pinataSDK, { PinataPinResponse } from '@pinata/sdk'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-const PINATA_API_KEY = process.env.PINATA_API_KEY
-const PINATA_API_SECRET = process.env.PINATA_API_SECRET
-
-if (!PINATA_API_KEY || !PINATA_API_SECRET) {
-  throw new Error('PINATA_API_KEY and PINATA_API_SECRET must be provided')
-}
-
-const pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET)
+import { pinata } from '../../pinata'
 
 export default async function handler(
   req: NextApiRequest,
