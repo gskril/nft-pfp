@@ -1,6 +1,8 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAccount } from 'wagmi'
 
+import { useIsMounted } from '../hooks/useIsMounted'
+
 import Footer from './Footer'
 
 export default function Layout({
@@ -12,13 +14,14 @@ export default function Layout({
   children: React.ReactNode
   size?: 'lg' | 'sm'
 }) {
+  const isMounted = useIsMounted()
   const { address } = useAccount()
 
   return (
     <>
       <div className="layout">
         <div className="nav">
-          {address && (
+          {address && isMounted && (
             <div className="connect-wrapper">
               <ConnectButton showBalance={false} chainStatus="none" />
             </div>
