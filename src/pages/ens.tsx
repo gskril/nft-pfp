@@ -11,7 +11,7 @@ import {
 import { hash } from 'eth-ens-namehash'
 import { Toaster } from 'react-hot-toast'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Confetti from 'react-confetti'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -19,6 +19,7 @@ import useWindowSize from 'react-use/lib/useWindowSize'
 
 import { ENS_RESOLVER_ABI, getEtherscanUrl } from '../utils/contract'
 import { Profile } from '../components/Profile'
+import { useIsMounted } from '../hooks/useIsMounted'
 import { usePlausible } from 'next-plausible'
 import Button from '../components/Button'
 import Hero from '../components/Hero'
@@ -37,12 +38,10 @@ export default function Home() {
   const { nfts, ensNames, isLoading, isError } = useNfts(address, chain)
   const { width: windowWidth, height: windowHeight } = useWindowSize()
 
-  const [isMounted, setIsMounted] = useState(false)
+  const isMounted = useIsMounted()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isAvatarSet, setIsAvatarSet] = useState(false)
   const [selectedNft, setSelectedNft] = useState<Nft | null>(null)
-
-  useEffect(() => setIsMounted(true), [])
 
   return (
     <>
