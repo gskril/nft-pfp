@@ -35,7 +35,7 @@ export default function Uploader({ state, setState }: UploaderProps) {
   }, [state])
 
   if (state.status === 'success') {
-    const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${state?.message}`
+    const ipfsUrl = `https://gateway.ipfs.io/ipfs/${state?.message}`
     return <Success name="Uploaded media" href={ipfsUrl} />
   }
 
